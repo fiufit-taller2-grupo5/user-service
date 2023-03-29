@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Name of the deployment
+  name: user-service-deployment
+  # Labels are key-value pair assigned in this case to the deployment
+  # The key can be whatever I want, in this case, I called it app to reference it in the future
+  labels:
+    # Reffering to user-service app
+    app: user-service
+# Specification for the deployment
+spec:
+  # kubernetes will do whatever it can to ensure having always exactly 1 pod running
+  replicas: 1
+  selector:
+    # This means it will select the pods which its label matches exactly with "app: user-service"
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      # This indicates the pods created by the deployment will have app: user-service as a label
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: szwtomas/fiufit:user-service
+          ports:
+            - containerPort: 7878
+      # This means that, if the container exits for any reason, it should restart again. It is the default value
+      # Other options are OnFailure y Never
+      restartPolicy: Always
