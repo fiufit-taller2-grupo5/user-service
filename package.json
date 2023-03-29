@@ -8,7 +8,9 @@
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='./src/**'",
     "build": "tsc",
-    "start": "node dist/src/index.js"
+    "start": "node dist/src/index.js",
+    "lint": "eslint . --ext .js,.jsx,.ts",
+    "lint:fix": "eslint . --fix --ext .js,.ts"
   },
   "repository": {
     "type": "git",
