@@ -1,0 +1,17 @@
+name: User Service Test and Coverage
+on:
+  push:
+    paths:
+      - '/**'
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Build docker image
+        run: docker build --no-cache --progress=plain -t user-service ./user-service
+      - name: Run tests
+        run: docker run user-service npm test
