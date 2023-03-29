@@ -5,7 +5,7 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 
 export default {
-  preset: 'ts-jest',
+  preset: "ts-jest",
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -25,7 +25,7 @@ export default {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: 'coverage',
+  coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [

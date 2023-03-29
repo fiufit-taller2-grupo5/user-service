@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
 export class UserController {
   public async getAllUsers(_req: Request, res: Response) {

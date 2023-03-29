@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { HealthCheckContrller } from '../controllers/HealthCheckController';
+import { Router } from "express";
+import { HealthCheckContrller } from "../controllers/HealthCheckController";
 
 export class HealthCheckRouter {
   private router: Router;
@@ -16,7 +16,7 @@ export class HealthCheckRouter {
   }
 
   private initRoutes() {
-    this.router.get('/', this.bind(this.healthCheckController.healthCheck));
+    this.router.get("/", this.bind(this.healthCheckController.healthCheck));
   }
 
   private bind(method: Function) {

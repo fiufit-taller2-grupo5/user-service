@@ -1,7 +1,7 @@
-import express, { Express } from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import { AppRouter } from './routes/AppRouter';
+import express, { Express } from "express";
+import cors from "cors";
+import morgan from "morgan";
+import { AppRouter } from "./routes/AppRouter";
 
 export class App {
   private app: Express;
@@ -29,6 +29,6 @@ export class App {
   private initMiddleware() {
     this.app.use(express.json());
     this.app.use(cors());
-    this.app.use(morgan('common'));
+    this.app.use(morgan("common"));
   }
 }
