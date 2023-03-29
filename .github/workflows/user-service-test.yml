@@ -1,8 +1,6 @@
 name: User Service Test and Coverage
 on:
   push:
-    paths:
-      - '/**'
     branches:
       - master
 jobs:
@@ -13,5 +11,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build docker image
         run: docker build --no-cache --progress=plain -t user-service ./user-service
+      - name: Run linter
+        run: docker run npm lint
       - name: Run tests
         run: docker run user-service npm test
