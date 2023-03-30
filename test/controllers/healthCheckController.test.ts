@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { UserController } from "../../src/controllers/UserController";
+import { HealthCheckContrller } from "../../src/controllers/HealthCheckController";
 import { OK } from "../../src/constants/http";
 
-describe("UserController", () => {
+describe("HealthCheckController", () => {
   let req: Request;
   let res: Response;
-  let unit: UserController;
+  let unit: HealthCheckContrller;
 
   beforeEach(() => {
     res = {} as unknown as Response;
@@ -15,14 +15,14 @@ describe("UserController", () => {
       return res;
     });
 
-    unit = new UserController();
+    unit = new HealthCheckContrller();
   });
 
   describe("getAllUsers", () => {
     it("Should return an empty array of users", async () => {
-      await unit.getAllUsers(req, res);
+      await unit.healthCheck(req, res);
       expect(res.status).toHaveBeenCalledWith(OK);
-      expect(res.json).toHaveBeenCalledWith({ users: [] });
+      expect(res.json).toHaveBeenCalledWith({ status: 1 });
     });
   });
 });
