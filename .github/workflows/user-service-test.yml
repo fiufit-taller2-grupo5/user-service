@@ -12,6 +12,6 @@ jobs:
       - name: Build docker image
         run: docker build --no-cache --progress=plain -t user-service .
       - name: Run linter
-        run: docker run npm lint
+        run: docker run user-service npm lint
       - name: Run tests
         run: docker run user-service npm test
