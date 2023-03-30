@@ -10,7 +10,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Build docker image
-        run: docker build --no-cache --progress=plain -t user-service ./user-service
+        run: docker build --no-cache --progress=plain -t user-service .
       - name: Run linter
         run: docker run npm lint
       - name: Run tests
