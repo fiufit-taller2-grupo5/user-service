@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  ESlint Code Quality:
+  code-quality:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -13,7 +13,7 @@ jobs:
         run: docker build --no-cache --progress=plain -t user-service .
       - name: Run linter
         run: docker run user-service npm run lint
-  Tests and Code Coverage:
+  tests-code-coverage:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
