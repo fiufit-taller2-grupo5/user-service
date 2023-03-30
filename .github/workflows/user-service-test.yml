@@ -1,10 +1,10 @@
-name: User Service Test and Coverage
+name: User Service - Tests and Linter
 on:
   push:
     branches:
       - master
 jobs:
-  test:
+  ESlint Code Quality:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -13,5 +13,12 @@ jobs:
         run: docker build --no-cache --progress=plain -t user-service .
       - name: Run linter
         run: docker run user-service npm run lint
-      - name: Run tests
+  Tests and Code Coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Build Docker Image
+        run: docker build --no-cache --progress=plain -t user-service .
+      - name: Run Unit Tests
         run: docker run user-service npm test
