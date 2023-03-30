@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
+import { OK } from "../constants/http";
 
 export class UserController {
   public async getAllUsers(_req: Request, res: Response) {
-    res.status(200).json({ users: [] });
+    res.status(OK).json({ users: [] });
   }
 }

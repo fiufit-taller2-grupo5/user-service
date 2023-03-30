@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
+import { OK } from "../constants/http";
 
 export class HealthCheckContrller {
-  public healthCheck(req: Request, res: Response) {
-    res.send({ status: 200 });
+  public async healthCheck(_req: Request, res: Response) {
+    res.status(OK).json({ status: 1 });
   }
 }
