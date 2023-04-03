@@ -13,6 +13,8 @@ RUN npm i -g typescript
 # Installs dependencies
 RUN npm install
 
+RUN npx prisma generate
+
 # Copies the rest of the files into the workdir
 COPY . .
 
