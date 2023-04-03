@@ -18,6 +18,7 @@ export class UserRouter {
   private initRoutes() {
     this.router.get("/", this.bind(this.userController.getAllUsers));
     this.router.get("/:id", this.bind(this.userController.getUserById));
+    this.router.post("/", this.bind(this.userController.newUser));
   }
 
   private bind(method: Function) {
