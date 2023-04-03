@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { HealthCheckContrller } from "../controllers/HealthCheckController";
+import { HealthCheckController } from "../controllers/HealthCheckController";
 
 export class HealthCheckRouter {
   private router: Router;
-  private healthCheckController: HealthCheckContrller;
+  private healthCheckController: HealthCheckController;
 
-  constructor(router: Router, healthCheckController: HealthCheckContrller) {
+  constructor(router: Router, healthCheckController: HealthCheckController) {
     this.router = router;
     this.healthCheckController = healthCheckController;
     this.initRoutes();

@@ -4,8 +4,8 @@ import morgan from "morgan";
 import { AppRouter } from "./routes/AppRouter";
 
 export class App {
-  private app: Express;
-  private port: number;
+  private readonly app: Express;
+  private readonly port: number;
   private router: AppRouter;
 
   constructor(app: Express, port: number, router: AppRouter) {

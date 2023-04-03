@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
-import { HealthCheckContrller } from "../../src/controllers/HealthCheckController";
+import { HealthCheckController } from "../../src/controllers/HealthCheckController";
 import { OK } from "../../src/constants/http";
 
 describe("HealthCheckController", () => {
   let req: Request;
   let res: Response;
-  let unit: HealthCheckContrller;
+  let unit: HealthCheckController;
 
   beforeEach(() => {
     res = {} as unknown as Response;
     res.json = jest.fn(() => res);
-    res.status = jest.fn((statusCode) => {
+    res.status = jest.fn((statusCode: number) => {
       res.statusCode = statusCode;
       return res;
     });
 
-    unit = new HealthCheckContrller();
+    unit = new HealthCheckController();
   });
 
   describe("getAllUsers", () => {
