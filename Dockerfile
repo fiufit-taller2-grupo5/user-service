@@ -7,16 +7,13 @@ WORKDIR /app
 # Copy the package.json and package-lock.json files into the workdir
 COPY package*.json ./
 
-# Installs typescript globally inside the container
-RUN npm i -g typescript
-
 # Installs dependencies
 RUN npm install
 
-RUN npx prisma generate
-
 # Copies the rest of the files into the workdir
 COPY . .
+
+RUN npx prisma generate
 
 # Builds the app
 RUN npm run build
