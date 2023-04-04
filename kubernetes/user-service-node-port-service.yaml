@@ -16,8 +16,6 @@ spec:
   ports:
     # The port number on which the Service listens for incoming traffic
     - port: 80
-      # I can define a  name for the port and refer to it in the ingress
-      name: user-service-port
       # Listens using TCP Protocol
       protocol: TCP
       # The port number on which the application running inside the Pods is listening and ready to receive traffic.
