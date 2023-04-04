@@ -10,7 +10,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Build docker image
-        run: docker build --no-cache --progress=plain -t user-service .
+        run: docker build --no-cache --progress=plain -t user-service ./docker
       - name: Run linter
         run: docker run user-service npm run lint
   tests-code-coverage:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Build Docker Image
-        run: docker build --no-cache --progress=plain -t user-service .
+        run: docker build --no-cache --progress=plain -t user-service ./docker
       - name: Run Unit Tests
         run: docker run user-service npm test
   okteto-deployment:
