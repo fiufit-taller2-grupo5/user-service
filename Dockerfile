@@ -5,7 +5,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy the package.json and package-lock.json files into the workdir
-COPY ../package*.json ./
+COPY package*.json ./
 
 # Installs typescript globally inside the container
 RUN npm i -g typescript
@@ -16,7 +16,7 @@ RUN npm install
 RUN npx prisma generate
 
 # Copies the rest of the files into the workdir
-COPY .. .
+COPY . .
 
 # Builds the app
 RUN npm run build
