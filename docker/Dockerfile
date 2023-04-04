@@ -16,7 +16,7 @@ RUN npm install
 RUN npx prisma generate
 
 # Copies the rest of the files into the workdir
-COPY . .
+COPY .. .
 
 # Builds the app
 RUN npm run build
