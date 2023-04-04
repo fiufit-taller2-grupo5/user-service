@@ -1,4 +1,4 @@
-name: User Service - Tests and Linter
+name: User Service - Tests, Linter and Deployment to Okteto
 on:
   push:
     branches:

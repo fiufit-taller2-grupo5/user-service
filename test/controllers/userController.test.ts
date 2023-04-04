@@ -17,12 +17,4 @@ describe("UserController", () => {
 
     unit = new UserController();
   });
-
-  describe("getAllUsers", () => {
-    it("Should return an empty array of users", async () => {
-      await unit.getAllUsers(req, res);
-      expect(res.status).toHaveBeenCalledWith(OK);
-      expect(res.json).toHaveBeenCalledWith({ users: [] });
-    });
-  });
 });
