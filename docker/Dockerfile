@@ -5,7 +5,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy the package.json and package-lock.json files into the workdir
-COPY package*.json ./
+COPY ../package*.json ./
 
 # Installs typescript globally inside the container
 RUN npm i -g typescript
