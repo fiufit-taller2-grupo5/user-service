@@ -14,6 +14,10 @@ export class App {
     this.router = router;
     this.initMiddleware();
     this.initRoutes();
+
+    this.app.get("/", (_req, res) => {
+      res.send("Hello World!");
+    });
   }
 
   public startListening() {
