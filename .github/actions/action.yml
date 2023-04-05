@@ -4,7 +4,6 @@ inputs:
   tag:
     description: 'Name and tag in the "name:tag" format'
     required: false
-    default: "-t"
   file:
     description: 'Name of the Dockerfile (Default is "Dockerfile")'
     required: false
@@ -19,6 +18,7 @@ inputs:
   global:
     description: 'Use global when you want to make the image availbale to everyone in your team'
     required: false
+    default: "false"
 runs:
   using: 'docker'
   image: 'Dockerfile'
