@@ -10,8 +10,10 @@ COPY package*.json ./
 # Installs dependencies
 RUN npm install
 
-# Copies the rest of the files into the workdir
-COPY . .
+# Copies the rest of the files into the workdir 
+COPY ./src .
+
+COPY ./prisma .
 
 RUN npx prisma generate
 

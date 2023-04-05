@@ -7,8 +7,9 @@
     "dev": "ts-node-dev src/index.ts",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='./src/**'",
-    "build": "tsc",
+    "build": "npm run generate && tsc",
     "start": "node dist/src/index.js",
+    "generate": "npx prisma generate",
     "lint": "eslint . --ext .js,.jsx,.ts",
     "lint:fix": "eslint . --fix --ext .js,.ts"
   },
