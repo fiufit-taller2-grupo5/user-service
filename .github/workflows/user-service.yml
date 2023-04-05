@@ -37,3 +37,5 @@ jobs:
         uses: okteto/build@latest
         with:
           file: Dockerfile
+      - name: "Deploy"
+        run: okteto build -t --progress plain -f Dockerfile
