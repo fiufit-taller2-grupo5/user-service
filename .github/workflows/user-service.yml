@@ -32,7 +32,7 @@ jobs:
       - name: "Login"
         uses: okteto/login@latest
         with:
-          token: ${{ secrets.OKTETO_KEY }}
+          token: ${{ secrets.OKTETO_TOKEN }}
       - name: "Build"
         uses: okteto/build@latest
         with:
