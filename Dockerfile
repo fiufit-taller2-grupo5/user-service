@@ -11,9 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copies the rest of the files into the workdir 
-COPY ./src .
-
-COPY ./prisma .
+COPY . .
 
 RUN npx prisma generate
 
