@@ -20,7 +20,7 @@ jobs:
           namespace: szwtomas
       
       - name: Build image and deploy 
-        uses: ./.github/actions/build-and-deploy
+        uses: ./.github/actions
         with:
           tag: okteto.dev/user-service:latest
           file: Dockerfile
