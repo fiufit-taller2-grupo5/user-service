@@ -12,7 +12,7 @@ jobs:
 
       - uses: okteto/context@latest
         with:
-          token: ${{ secrets.OKTETO_TOKEN_PROD }}
+          token: ${{ secrets.OKTETO_TOKEN }}
       
       - name: Create devlopment environments namespace
         uses: okteto/namespace@latest
