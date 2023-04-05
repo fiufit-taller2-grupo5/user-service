@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: registry.cloud.okteto.net/szwtomas/user-service:latest
+          image: registry.cloud.okteto.net/prod-lucianotrujillo/user-service:latest
           ports:
             - containerPort: 7878
       # This means that, if the container exits for any reason, it should restart again. It is the default value

@@ -15,7 +15,7 @@ spec:
     app: user-service
   ports:
     # The port number on which the Service listens for incoming traffic
-    - port: 80
+    - port: 3000
       # Listens using TCP Protocol
       protocol: TCP
       # The port number on which the application running inside the Pods is listening and ready to receive traffic.
