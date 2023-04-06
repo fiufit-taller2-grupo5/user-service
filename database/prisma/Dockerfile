@@ -2,6 +2,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY postgres/prisma .
+COPY . .
+
+RUN npm install prisma
+
+RUN npm install
 
 CMD ["npx", "prisma", "db", "push"]
