@@ -12,7 +12,7 @@ export class AppRouter {
   }
 
   public initRoutes(expressApp: Express) {
-    expressApp.use("/api/user", this.userRouter.getRouter());
-    expressApp.use("/api/health-check", this.healthCheckRouter.getRouter());
+    expressApp.use("/health-check", this.healthCheckRouter.getRouter());
+    expressApp.use("/api/users", this.userRouter.getRouter());
   }
 }

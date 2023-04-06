@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HealthCheckController } from "../../src/controllers/HealthCheckController";
-import { OK } from "../../src/constants/http";
+import { OK } from "../../src/constants/httpConstants";
 
 describe("HealthCheckController", () => {
   let req: Request;

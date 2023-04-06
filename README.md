@@ -14,4 +14,12 @@ You need node 18 as a requirement. First, run `npm install` in the project's roo
 
 For running tests, first install dependencies as instructed in the previous section. Then, just run `npm run tests`. This will run all tests and collect code coverage for the files _with_ test files. If you want to see code coverage for the whole project, run `npm run test:coverage`, and the generated report will also take into account classes without test files.
 
+## Endpoints:
+
+GET /api/user -> returns list of all users: '{"users": [{...user1}, {...user2}, ...]}'
+
+GET /api/user?id=${user_id} -> returns all data of user with id user_id:
+
+POST /api/user -> Creates new user if doesn't exists, body should be {name: string, email: string}
+
 Good Luck!

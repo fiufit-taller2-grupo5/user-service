@@ -1,25 +1,36 @@
 import { Request, Response } from "express";
-import { OK } from "../constants/http";
-import { PrismaClient } from "@prisma/client";
+import { OK } from "../constants/httpConstants";
+import { PrismaClient, User } from "@prisma/client";
+import { ACTIVE_USER } from "../constants/userStateConstants";
 
-const prisma = new PrismaClient();
 export class UserController {
+  private prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
   public async getAllUsers(_req: Request, res: Response) {
-    res.status(OK).json({ users: await prisma.user.findMany() });
+    res.status(OK).json({ users: await this.prisma.user.findMany() });
   }
 
   public async getUserById(req: Request, res: Response) {
-    const userId: number = parseInt(req.params.id);
+    const userId: number = +req.params.id;
 
-    const user = await prisma.user.findFirst({
+    const user: User | null = await this.prisma.user.findFirst({
       where: { id: userId },
     });
 
     if (!user) {
-      res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
-    res.status(OK).json({ user });
+    res.status(OK).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      state: user.state,
+    });
   }
 
   public async newUser(req: Request, res: Response) {
@@ -29,13 +40,17 @@ export class UserController {
       res.status(400).json({ error: "Missing name or email" });
     }
 
-    const user = await prisma.user.create({
+    if (await this.prisma.user.findFirst({ where: { name: name } })) {
+      res.status(409).json({ error: `User with name ${name} already exists` });
+    }
+
+    const user = await this.prisma.user.create({
       data: {
         name,
         email,
         createdAt: new Date(),
         updatedAt: new Date(),
-        state: "ACTIVE",
+        state: ACTIVE_USER,
       },
     });
 
