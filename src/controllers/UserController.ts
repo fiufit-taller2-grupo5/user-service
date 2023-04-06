@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { OK } from "../constants/httpConstants";
+import { BAD_REQUEST, CONFLICT, OK } from "../constants/httpConstants";
 import { User } from "@prisma/client";
-import { UserDal } from "../dal/UserDal";
+import { IUserDal } from "../dal/IUserDal";
 
 export class UserController {
-  private userDal: UserDal;
+  private userDal: IUserDal;
 
-  constructor(userDal: UserDal) {
+  constructor(userDal: IUserDal) {
     this.userDal = userDal;
   }
 
@@ -34,14 +34,18 @@ export class UserController {
     const { name, email } = req.body;
     if (!name || !email) {
       console.error("Missing name or email");
-      res.status(400).json({ error: "Missing name or email" });
+      res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
 
     if (await this.userDal.findByName(name)) {
-      res.status(409).json({ error: `User with name ${name} already exists` });
+      res
+        .status(CONFLICT)
+        .json({ error: `User with name ${name} already exists` });
     }
 
     const newUser = await this.userDal.create(name, email);
-    res.status(OK).json({ newUser });
+    res.status(OK).json({
+      status: `Username ${newUser.name} with id ${newUser.id} created`,
+    });
   }
 }

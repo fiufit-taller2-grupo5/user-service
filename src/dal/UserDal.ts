@@ -1,11 +1,12 @@
 import { PrismaClient, User } from "@prisma/client";
 import { ACTIVE_USER } from "../constants/userStateConstants";
+import { IUserDal } from "./IUserDal";
 
-export class UserDal {
+export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
-  constructor() {
-    this.prismaClient = new PrismaClient();
+  constructor(prismaClient: PrismaClient) {
+    this.prismaClient = prismaClient;
   }
 
   public async findAll(): Promise<User[]> {
