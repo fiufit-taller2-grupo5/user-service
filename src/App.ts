@@ -2,16 +2,17 @@ import express, { Express } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { AppRouter } from "./routes/AppRouter";
+import { IAppProvider } from "./providers/IAppProvider";
 
 export class App {
   private readonly app: Express;
   private readonly port: number;
   private router: AppRouter;
 
-  constructor(app: Express, port: number, router: AppRouter) {
+  constructor(app: Express, port: number, appProvider: IAppProvider) {
     this.app = app;
     this.port = port;
-    this.router = router;
+    this.router = appProvider.getAppRouter();
     this.initMiddleware();
     this.initRoutes();
 
