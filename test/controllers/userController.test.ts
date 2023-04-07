@@ -78,4 +78,40 @@ describe("UserController", () => {
       });
     });
   });
+
+  describe("getUserById", () => {
+    it("Should return user if exists", async () => {
+      const user = {
+        id: 1,
+        name: "John Doe",
+        email: "doe@mail.com",
+        state: "ACTIVE",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const userDal: IUserDal = {
+        findAll: jest.fn(),
+        findById: jest.fn(async () => user),
+        findByName: jest.fn(),
+        create: jest.fn(),
+      };
+
+      const unit = new UserController(userDal);
+
+      const req = { params: { id: "1" } } as unknown as Request;
+
+      await unit.getUserById(req, res);
+
+      const expected = {
+        id: 1,
+        name: "John Doe",
+        email: "doe@mail.com",
+        state: "ACTIVE",
+      };
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(expected);
+    });
+  });
 });
