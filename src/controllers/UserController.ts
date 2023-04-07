@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { BAD_REQUEST, CONFLICT, OK } from "../constants/httpConstants";
+import { BAD_REQUEST, CONFLICT, CREATED, OK } from "../constants/httpConstants";
 import { User } from "@prisma/client";
 import { IUserDal } from "../dal/IUserDal";
 
@@ -16,6 +16,11 @@ export class UserController {
 
   public async getUserById(req: Request, res: Response) {
     const userId: number = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+    }
+
     const user: User | null = await this.userDal.findById(userId);
 
     if (!user) {
@@ -34,18 +39,19 @@ export class UserController {
     const { name, email } = req.body;
     if (!name || !email) {
       console.error("Missing name or email");
-      res.status(BAD_REQUEST).json({ error: "Missing name or email" });
+      return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
 
     if (await this.userDal.findByName(name)) {
-      res
+      return res
         .status(CONFLICT)
         .json({ error: `User with name ${name} already exists` });
     }
 
     const newUser = await this.userDal.create(name, email);
-    res.status(OK).json({
-      status: `Username ${newUser.name} with id ${newUser.id} created`,
+    console.log(newUser);
+    res.status(CREATED).json({
+      status: `User ${newUser.name} with id ${newUser.id} created`,
     });
   }
 }
