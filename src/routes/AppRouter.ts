@@ -1,7 +1,6 @@
 import { Express } from "express";
 import { UserRouter } from "./UserRouter";
 import { HealthCheckRouter } from "./HealthCheckRouter";
-// import functions from auth-middleware.js 
 
 export class AppRouter {
   private healthCheckRouter: HealthCheckRouter;
