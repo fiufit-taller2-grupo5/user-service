@@ -12,8 +12,8 @@ export class UserController {
 
   public async getAllUsers(_req: Request, res: Response) {
     const users = await this.userDal.findAll();
-    res.append("X-Total-Count", `${users.length}`);
-    res.append("Access-Control-Expose-Headers", "X-Total-Count");
+    res.set("Access-Control-Expose-Headers", "X-Total-Count");
+    res.set("X-Total-Count", `${users.length}`);
     return res.status(OK).json({ users });
   }
 
