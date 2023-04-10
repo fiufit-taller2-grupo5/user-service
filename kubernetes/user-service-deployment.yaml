@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: registry.cloud.okteto.net/prod-szwtomas/user-service:v2
+          image: registry.cloud.okteto.net/prod-szwtomas/user-service:v3
           ports:
             - containerPort: 3000
       # This means that, if the container exits for any reason, it should restart again. It is the default value
