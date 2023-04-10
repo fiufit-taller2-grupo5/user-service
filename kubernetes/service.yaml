@@ -7,7 +7,7 @@ spec:
     app: user-service
   ports:
     - name: user-service-port
-      port: 3000
+      port: 80
       targetPort: 3000
       protocol: TCP
   type: ClusterIP
