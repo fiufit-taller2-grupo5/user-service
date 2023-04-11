@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
 import {
   BAD_REQUEST,
-  CONFLICT,
   CREATED,
   INTERNAL_SERVER_ERROR,
   OK,
 } from "../constants/httpConstants";
-import { IUserDal } from "../dal/IUserDal";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { IAdminDal } from "../dal/IAdminDal";
 
 export class AdminController {
@@ -27,7 +24,8 @@ export class AdminController {
   public async deleteAdmin(req: Request, res: Response) {
     const userId: number = +req.params.id;
     try {
-      let user = await this.adminDal.deleteById(userId);
+      const user = await this.adminDal.deleteById(userId);
+      console.log(`Deleting admin of id ${user.id}`);
       res.status(OK).json({ status: "User deleted" });
     } catch (error: any) {
       res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
@@ -61,7 +59,7 @@ export class AdminController {
       console.error("Missing name or email");
       return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
-    
+
     const newUser = await this.adminDal.create(name, email);
     console.log(newUser);
     res.status(CREATED).json({

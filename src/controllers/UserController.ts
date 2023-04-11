@@ -7,7 +7,6 @@ import {
   OK,
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
 export class UserController {
   private userDal: IUserDal;
@@ -26,7 +25,8 @@ export class UserController {
   public async deleteUser(req: Request, res: Response) {
     const userId: number = +req.params.id;
     try {
-      let user = await this.userDal.deleteById(userId);
+      const user = await this.userDal.deleteById(userId);
+      console.log(`Deleting user of id ${user.id}...`);
       res.status(OK).json({ status: "User deleted" });
     } catch (error: any) {
       res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });

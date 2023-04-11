@@ -8,7 +8,11 @@ export class AppRouter {
   private userRouter: UserRouter;
   private adminRouter: AdminRouter;
 
-  constructor(healthCheckRouter: HealthCheckRouter, userRouter: UserRouter, adminRouter: AdminRouter) {
+  constructor(
+    healthCheckRouter: HealthCheckRouter,
+    userRouter: UserRouter,
+    adminRouter: AdminRouter
+  ) {
     this.healthCheckRouter = healthCheckRouter;
     this.userRouter = userRouter;
     this.adminRouter = adminRouter;
@@ -18,6 +22,5 @@ export class AppRouter {
     expressApp.use("/health-check", this.healthCheckRouter.getRouter());
     expressApp.use("/api/users", this.userRouter.getRouter());
     expressApp.use("/api/admins", this.adminRouter.getRouter());
-
   }
 }
