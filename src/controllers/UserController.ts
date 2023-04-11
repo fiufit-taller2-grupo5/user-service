@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
-import { BAD_REQUEST, CONFLICT, CREATED, OK } from "../constants/httpConstants";
-import { User } from "@prisma/client";
+import {
+  BAD_REQUEST,
+  CONFLICT,
+  CREATED,
+  INTERNAL_SERVER_ERROR,
+  OK,
+} from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
 
 export class UserController {
@@ -24,7 +29,7 @@ export class UserController {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
 
-    const user: User | null = await this.userDal.findById(userId);
+    const user = await this.userDal.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -55,6 +60,70 @@ export class UserController {
     console.log(newUser);
     res.status(CREATED).json({
       status: `User ${newUser.name} with id ${newUser.id} created`,
+    });
+  }
+
+  public async addUserData(req: Request, res: Response) {
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+    }
+
+    const { weight, height, birthDate, latitude, longitude } = req.body;
+    if (!latitude || !longitude) {
+      return res
+        .status(BAD_REQUEST)
+        .json({ error: "Missing latitude or longitude" });
+    }
+
+    try {
+      await this.userDal.addData({
+        userId,
+        weight,
+        height,
+        birthDate,
+        latitude,
+        longitude,
+      });
+
+      console.log("Successfuly added user metadata for user with id " + userId);
+
+      res
+        .status(OK)
+        .json({ status: `Metadatadata added for user with id ${userId}` });
+    } catch (err: any) {
+      console.log("Failed adding user metadata for user with id " + userId);
+      console.log(err);
+      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
+    }
+  }
+
+  public async getUserData(req: Request, res: Response) {
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+    }
+
+    const userMetadata = await this.userDal.getData(userId);
+
+    if (!userMetadata) {
+      console.log("No metadata found for user with id " + userId);
+      return res
+        .status(404)
+        .json({ error: `No metadata found for user with id ${userId}` });
+    }
+
+    console.log(`Got metadata for user with id ${userId}:`);
+    console.log(userMetadata);
+
+    res.status(OK).json({
+      weight: userMetadata.weight,
+      height: userMetadata.height,
+      birthDate: userMetadata.birthDate,
+      latitude: userMetadata.latitude,
+      longitude: userMetadata.longitude,
     });
   }
 }

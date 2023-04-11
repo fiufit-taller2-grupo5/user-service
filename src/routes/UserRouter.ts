@@ -18,6 +18,14 @@ export class UserRouter {
   private initRoutes() {
     this.router.get("/", this.bind(this.userController.getAllUsers));
     this.router.get("/:id", this.bind(this.userController.getUserById));
+    this.router.get(
+      "/:id/metadata",
+      this.bind(this.userController.getUserData)
+    );
+    this.router.put(
+      "/:id/metadata",
+      this.bind(this.userController.addUserData)
+    );
     this.router.post("/", this.bind(this.userController.newUser));
   }
 
