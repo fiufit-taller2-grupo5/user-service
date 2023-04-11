@@ -24,7 +24,8 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: registry.cloud.okteto.net/prod-szwtomas/user-service:v10
+          image: registry.cloud.okteto.net/prod-szwtomas/user-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
       # This means that, if the container exits for any reason, it should restart again. It is the default value
