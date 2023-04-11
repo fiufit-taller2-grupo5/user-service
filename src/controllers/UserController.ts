@@ -14,7 +14,7 @@ export class UserController {
     const users = await this.userDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
-    return res.status(OK).json({ users });
+    return res.status(OK).json({ data: users });
   }
 
   public async getUserById(req: Request, res: Response) {
@@ -40,7 +40,9 @@ export class UserController {
 
   public async newUser(req: Request, res: Response) {
     console.log(req);
-    console.log("------------------------------------------------------------------------------------");
+    console.log(
+      "------------------------------------------------------------------------------------"
+    );
     console.log(req.body);
 
     const { name, email } = req.body;
