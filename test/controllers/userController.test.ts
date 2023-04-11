@@ -22,6 +22,8 @@ describe("UserController", () => {
         findById: jest.fn(),
         findByName: jest.fn(),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -66,6 +68,8 @@ describe("UserController", () => {
         findById: jest.fn(),
         findByName: jest.fn(),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -95,6 +99,8 @@ describe("UserController", () => {
         findById: jest.fn(async () => user),
         findByName: jest.fn(),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -120,6 +126,8 @@ describe("UserController", () => {
         findById: jest.fn(async () => null),
         findByName: jest.fn(),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -138,6 +146,8 @@ describe("UserController", () => {
         findById: jest.fn(),
         findByName: jest.fn(),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -172,6 +182,8 @@ describe("UserController", () => {
         create: jest.fn(async () => {
           return user;
         }),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -199,6 +211,8 @@ describe("UserController", () => {
         findById: jest.fn(),
         findByName: jest.fn(),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
@@ -227,6 +241,8 @@ describe("UserController", () => {
           };
         }),
         create: jest.fn(),
+        addData: jest.fn(),
+        getData: jest.fn(),
       };
 
       const unit = new UserController(userDal);
