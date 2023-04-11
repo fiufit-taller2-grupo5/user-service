@@ -9,10 +9,27 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  state     String
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  name         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime
+  state        String        @default("active")
+  UserMetadata UserMetadata?
+}
+
+model TrainingType {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model UserMetadata {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  weight    Int?
+  height    Int?
+  birthDate DateTime?
+  latitude  Float
+  longitude Float
+  User      User      @relation(fields: [userId], references: [id])
 }
