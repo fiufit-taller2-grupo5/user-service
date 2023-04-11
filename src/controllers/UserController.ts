@@ -39,6 +39,10 @@ export class UserController {
   }
 
   public async newUser(req: Request, res: Response) {
+    console.log(req);
+    console.log("------------------------------------------------------------------------------------");
+    console.log(req.body);
+
     const { name, email } = req.body;
     if (!name || !email) {
       console.error("Missing name or email");
