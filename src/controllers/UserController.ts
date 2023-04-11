@@ -7,6 +7,7 @@ import {
   OK,
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
 export class UserController {
   private userDal: IUserDal;
@@ -19,7 +20,17 @@ export class UserController {
     const users = await this.userDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
-    return res.status(OK).json({ data: users });
+    return res.status(OK).json(users);
+  }
+
+  public async deleteUser(req: Request, res: Response) {
+    const userId: number = +req.params.id;
+    try {
+      let user = await this.userDal.deleteById(userId);
+      res.status(OK).json({ status: "User deleted" });
+    } catch (error: any) {
+      res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
   }
 
   public async getUserById(req: Request, res: Response) {

@@ -21,6 +21,7 @@ describe("UserController", () => {
         findAll: jest.fn(async () => []),
         findById: jest.fn(),
         findByName: jest.fn(),
+        deleteById: jest.fn(),
         create: jest.fn(),
         addData: jest.fn(),
         getData: jest.fn(),
@@ -68,6 +69,7 @@ describe("UserController", () => {
         findById: jest.fn(),
         findByName: jest.fn(),
         create: jest.fn(),
+        deleteById: jest.fn(),
         addData: jest.fn(),
         getData: jest.fn(),
       };
@@ -99,6 +101,7 @@ describe("UserController", () => {
         findById: jest.fn(async () => user),
         findByName: jest.fn(),
         create: jest.fn(),
+        deleteById: jest.fn(),
         addData: jest.fn(),
         getData: jest.fn(),
       };
@@ -125,6 +128,7 @@ describe("UserController", () => {
         findAll: jest.fn(),
         findById: jest.fn(async () => null),
         findByName: jest.fn(),
+        deleteById: jest.fn(),
         create: jest.fn(),
         addData: jest.fn(),
         getData: jest.fn(),
@@ -145,6 +149,7 @@ describe("UserController", () => {
         findAll: jest.fn(),
         findById: jest.fn(),
         findByName: jest.fn(),
+        deleteById: jest.fn(),
         create: jest.fn(),
         addData: jest.fn(),
         getData: jest.fn(),
@@ -179,6 +184,7 @@ describe("UserController", () => {
         findAll: jest.fn(),
         findById: jest.fn(),
         findByName: jest.fn(),
+        deleteById: jest.fn(),
         create: jest.fn(async () => {
           return user;
         }),
@@ -209,6 +215,7 @@ describe("UserController", () => {
       const userDal: IUserDal = {
         findAll: jest.fn(),
         findById: jest.fn(),
+        deleteById: jest.fn(),
         findByName: jest.fn(),
         create: jest.fn(),
         addData: jest.fn(),
@@ -240,6 +247,7 @@ describe("UserController", () => {
             updatedAt: new Date(),
           };
         }),
+        deleteById: jest.fn(),
         create: jest.fn(),
         addData: jest.fn(),
         getData: jest.fn(),

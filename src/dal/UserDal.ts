@@ -19,6 +19,12 @@ export class UserDal implements IUserDal {
     });
   }
 
+  public async deleteById(userId: number): Promise<User> {
+    return await this.prismaClient.user.delete({
+      where: { id: userId },
+    });
+  }
+
   public async findByName(name: string): Promise<User | null> {
     return await this.prismaClient.user.findFirst({
       where: { name: name },
