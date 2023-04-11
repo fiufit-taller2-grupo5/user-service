@@ -45,16 +45,30 @@ export class UserDal implements IUserDal {
   }
 
   public async addData(userMetadata: UserMetadata): Promise<void> {
-    await this.prismaClient.userMetadata.create({
-      data: {
-        userId: userMetadata.userId,
-        weight: userMetadata.weight,
-        height: userMetadata.height,
-        birthDate: userMetadata.birthDate,
-        latitude: userMetadata.latitude,
-        longitude: userMetadata.longitude,
-      },
-    });
+    const userData = await this.getData(userMetadata.userId);
+    if (!userData) {
+      await this.prismaClient.userMetadata.create({
+        data: {
+          userId: userMetadata.userId,
+          weight: userMetadata.weight,
+          height: userMetadata.height,
+          birthDate: userMetadata.birthDate,
+          latitude: userMetadata.latitude,
+          longitude: userMetadata.longitude,
+        },
+      });
+    } else {
+      await this.prismaClient.userMetadata.update({
+        where: { userId: userMetadata.userId },
+        data: {
+          weight: userMetadata.weight,
+          height: userMetadata.height,
+          birthDate: userMetadata.birthDate,
+          latitude: userMetadata.latitude,
+          longitude: userMetadata.longitude,
+        },
+      });
+    }
   }
 
   public async getData(userId: number): Promise<UserMetadata | null> {
