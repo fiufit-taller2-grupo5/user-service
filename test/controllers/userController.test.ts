@@ -43,6 +43,7 @@ describe("UserController", () => {
           state: "ACTIVE",
           createdAt: new Date(),
           updatedAt: new Date(),
+          role: "user"
         },
         {
           id: 2,
@@ -51,6 +52,7 @@ describe("UserController", () => {
           state: "ACTIVE",
           createdAt: new Date(),
           updatedAt: new Date(),
+          role: "user"
         },
         {
           id: 3,
@@ -59,6 +61,7 @@ describe("UserController", () => {
           state: "ACTIVE",
           createdAt: new Date(),
           updatedAt: new Date(),
+          role: "user"
         },
       ];
 
@@ -94,6 +97,7 @@ describe("UserController", () => {
         state: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: "user"
       };
 
       const userDal: IUserDal = {
@@ -178,6 +182,7 @@ describe("UserController", () => {
         state: "ACTIVE",
         createdAt: created,
         updatedAt: updated,
+        role: "user"
       };
 
       const userDal: IUserDal = {
@@ -245,6 +250,7 @@ describe("UserController", () => {
             state: "ACTIVE",
             createdAt: new Date(),
             updatedAt: new Date(),
+            role: "user"
           };
         }),
         deleteById: jest.fn(),

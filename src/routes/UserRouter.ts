@@ -18,6 +18,7 @@ export class UserRouter {
   private initRoutes() {
     this.router.get("/", this.bind(this.userController.getAllUsers));
     this.router.get("/:id", this.bind(this.userController.getUserById));
+    this.router.delete("/:id", this.bind(this.userController.deleteUser));
     this.router.get(
       "/:id/metadata",
       this.bind(this.userController.getUserData)

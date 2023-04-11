@@ -39,6 +39,7 @@ export class UserDal implements IUserDal {
         createdAt: new Date(),
         updatedAt: new Date(),
         state: ACTIVE_USER,
+        role: "user",
       },
     });
   }
