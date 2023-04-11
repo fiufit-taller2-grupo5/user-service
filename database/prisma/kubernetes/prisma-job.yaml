@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: prisma-container
-          image: "registry.cloud.okteto.net/prod-szwtomas/potgres-job:v1"
+          image: registry.cloud.okteto.net/prod-szwtomas/prisma-job:v2
           command: ["npx", "prisma", "db", "push"]
           env:
             - name: DATABASE_URL
