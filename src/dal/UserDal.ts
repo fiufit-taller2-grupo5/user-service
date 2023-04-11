@@ -10,12 +10,16 @@ export class UserDal implements IUserDal {
   }
 
   public async findAll(): Promise<User[]> {
-    return await this.prismaClient.user.findMany();
+    return await this.prismaClient.user.findMany({
+      where: {
+        role: "user",
+      }
+    });
   }
 
   public async findById(userId: number): Promise<User | null> {
-    return await this.prismaClient.user.findUnique({
-      where: { id: userId },
+    return await this.prismaClient.user.findFirst({
+      where: { id: userId, role: "user" },
     });
   }
 
@@ -27,7 +31,7 @@ export class UserDal implements IUserDal {
 
   public async findByName(name: string): Promise<User | null> {
     return await this.prismaClient.user.findFirst({
-      where: { name: name },
+      where: { name: name, role: "user" },
     });
   }
 

@@ -22,5 +22,5 @@ jobs:
       - name: Build image and deploy 
         uses: ./.github/actions
         with:
-          tag: okteto.dev/user-service:v18
+          tag: okteto.dev/user-service:v19
           file: Dockerfile
