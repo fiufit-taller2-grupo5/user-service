@@ -1,22 +1,24 @@
-#name: Postgres DB Push
-#on:
-#  push:
-#    paths:
-#      - "database/prisma/**"
-#jobs:
-#  db-push:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
-#      
-#      - name: "Login" 
-#        uses: okteto/login@latest
-#        with:
-#          token: ${{ secrets.OKTETO_TOKEN }}
+name: Postgres DB Push
+on:
+ push:
+  branches:
+      - master
+   paths:
+     - "database/prisma/**"
+jobs:
+ db-push:
+   runs-on: ubuntu-latest
+   steps:
+     - name: Checkout code
+       uses: actions/checkout@v2
+     
+     - name: "Login" 
+       uses: okteto/login@latest
+       with:
+         token: ${{ secrets.OKTETO_TOKEN }}
 
-#      - name: "Build and Deploy"
-#        uses: okteto/build@latest
-#        with:
-#          file: postgres/prisma/Dockerfile
+     - name: "Build and Deploy"
+       uses: okteto/build@latest
+       with:
+         file: postgres/prisma/Dockerfile
           

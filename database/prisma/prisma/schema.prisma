@@ -17,6 +17,7 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   state        String        @default("active")
+  role         String        @default("user")
   UserMetadata UserMetadata?
 }
 
