@@ -3,9 +3,7 @@ set -e
 
 tag=$1
 file=$2
-global=$5
-
-BUILDPARAMS=""
+sha=$3
 
 if [ ! -z "$OKTETO_CA_CERT" ]; then
    echo "Custom certificate is provided"
@@ -15,10 +13,6 @@ fi
 
 params=$(eval echo --progress plain -t "$tag" -f "$file")
 
-if [ "$global" = "true" ]; then
-    params="${params} --global"
-fi
-
 params=$(eval echo "$params")
 
 echo running: okteto build $params
@@ -26,5 +20,8 @@ echo running: okteto build $params
 okteto build $params
 
 echo build completed successfully
+
+# replace :latest with the tag of the image in the /kubernetes/deployment.yml file
+sed -i "s/:latest/:$tag/g" kubernetes/deployment.yml
 
 okteto deploy -f okteto.yml

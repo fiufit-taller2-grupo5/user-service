@@ -25,9 +25,7 @@ runs:
   args:
     - ${{ inputs.tag }}
     - ${{ inputs.file }}
-    - ${{ inputs.path }}
-    - ${{ inputs.buildargs }}
-    - ${{ inputs.global }}
+    - ${{ inputs.sha }}
 branding:
   color: 'green'
   icon: 'layers'
