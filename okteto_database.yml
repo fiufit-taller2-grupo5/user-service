@@ -1,0 +1,3 @@
+name: admin-dashboard
+deploy:
+  - kubectl apply -f database/prisma/kubernetes

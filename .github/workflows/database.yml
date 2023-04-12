@@ -27,4 +27,4 @@ jobs:
           tag: okteto.dev/update-schemas:${{ github.sha }}
           file: database/prisma/Dockerfile
           sha: ${{ github.sha }}
-          okteto_yml: database/prisma/kubernetes
+          okteto_yml: okteto_database.yml

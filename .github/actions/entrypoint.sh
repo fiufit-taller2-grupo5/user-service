@@ -25,4 +25,5 @@ echo build completed successfully
 # replace the word latest with the tag of the image in the /kubernetes/deployment.yml file
 sed -i "s|latest|$sha|g" ./kubernetes/deployment.yml
 
+echo $okteto_yml
 okteto deploy -f $okteto_yml
