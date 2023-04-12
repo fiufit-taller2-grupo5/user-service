@@ -21,6 +21,8 @@ okteto build $params
 
 echo build completed successfully
 
+ls
+
 # replace the word latest with the tag of the image in the /kubernetes/deployment.yml file
 sed -i "" "s|latest|$tag|g" kubernetes/deployment.yml
 
