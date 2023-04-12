@@ -1,3 +1,3 @@
-name: admin-dashboard
+name: prisma-job
 deploy:
   - kubectl apply -f database/prisma/kubernetes
