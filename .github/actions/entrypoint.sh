@@ -4,6 +4,7 @@ set -e
 tag=$1
 file=$2
 sha=$3
+okteto_yml=$4
 
 if [ ! -z "$OKTETO_CA_CERT" ]; then
    echo "Custom certificate is provided"
@@ -24,4 +25,4 @@ echo build completed successfully
 # replace the word latest with the tag of the image in the /kubernetes/deployment.yml file
 sed -i "s|latest|$sha|g" ./kubernetes/deployment.yml
 
-okteto deploy -f okteto.yml
+okteto deploy -f $okteto_yml

@@ -26,6 +26,7 @@ runs:
     - ${{ inputs.tag }}
     - ${{ inputs.file }}
     - ${{ inputs.sha }}
+    - ${{ inputs.okteto_yml }}
 branding:
   color: 'green'
   icon: 'layers'

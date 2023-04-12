@@ -6,19 +6,25 @@ on:
    paths:
      - "database/prisma/**"
 jobs:
- db-push:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Checkout code
-       uses: actions/checkout@v2
-     
-     - name: "Login" 
-       uses: okteto/login@latest
-       with:
-         token: ${{ secrets.OKTETO_TOKEN }}
+  okteto-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-     - name: "Build and Deploy"
-       uses: okteto/build@latest
-       with:
-         file: postgres/prisma/Dockerfile
-          
+      - uses: okteto/context@latest
+        with:
+          token: ${{ secrets.OKTETO_TOKEN }}
+      
+      - name: Create devlopment environments namespace
+        uses: okteto/namespace@latest
+        with:
+          namespace: prod-szwtomas
+      
+      - name: Build image and deploy 
+        uses: ./.github/actions
+        with:
+          tag: okteto.dev/update-schemas:${{ github.sha }}
+          file: database/prisma/Dockerfile
+          sha: ${{ github.sha }}
+          okteto_yml: database/prisma/kubernetes

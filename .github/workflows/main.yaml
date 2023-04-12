@@ -25,3 +25,4 @@ jobs:
           tag: okteto.dev/user-service:${{ github.sha }}
           file: Dockerfile
           sha: ${{ github.sha }}
+          okteto_yml: kubernetes
