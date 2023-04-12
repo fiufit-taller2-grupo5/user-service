@@ -1,10 +1,10 @@
 name: Postgres DB Push
 on:
- push:
-  branches:
+  push:
+    branches:
       - master
-   paths:
-     - "database/prisma/**"
+    paths:
+      - "database/prisma/**"
 jobs:
   okteto-deployment:
     runs-on: ubuntu-latest
