@@ -9,4 +9,4 @@ RUN npm install prisma
 RUN npm install
 
 # todo change to prisma migrate
-CMD ["npx", "prisma", "db", "push"]
+CMD ["npx", "prisma", "db", "push", "--force-reset"]

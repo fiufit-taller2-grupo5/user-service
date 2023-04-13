@@ -28,8 +28,7 @@ model UserMetadata {
   weight    Int?
   height    Int?
   birthDate DateTime?
-  latitude  Float
-  longitude Float
+  location  String
 }
 
 model TrainingType {
