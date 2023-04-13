@@ -28,3 +28,4 @@ jobs:
           file: database/prisma/Dockerfile
           sha: ${{ github.sha }}
           okteto_yml: okteto_database.yml
+          k8s_deployment_file: database/prisma/kubernetes/prisma-job.yaml

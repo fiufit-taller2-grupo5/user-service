@@ -26,3 +26,4 @@ jobs:
           file: Dockerfile
           sha: ${{ github.sha }}
           okteto_yml: okteto_service.yml
+          k8s_deployment_file: kubernetes/deployment.yaml
