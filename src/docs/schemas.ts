@@ -83,3 +83,17 @@
  *         - latitude
  *         - longitude
  */
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Admin:
+ *       allOf:
+ *         - $ref: '#/components/schemas/User'
+ *         - type: object
+ *           properties:
+ *             role:
+ *               type: string
+ *               enum: ['admin']
+ */
