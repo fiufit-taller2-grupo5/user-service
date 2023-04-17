@@ -16,6 +16,17 @@ export class HealthCheckRouter {
   }
 
   private initRoutes() {
+    /**
+     * @openapi
+     * /health-check:
+     *   get:
+     *     tags:
+     *       - HealthCheck
+     *     description: Response if the app is up and running
+     *     responses:
+     *       200:
+     *         description: App is up and running
+     */
     this.router.get("/", this.bind(this.healthCheckController.healthCheck));
   }
 
