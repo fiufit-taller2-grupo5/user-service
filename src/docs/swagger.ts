@@ -1,5 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
-import { Express, Request, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 
 const options: swaggerJsdoc.Options = {
@@ -39,5 +39,6 @@ export const initSwaggerDocs = (app: Express, port: number) => {
     res.send(swaggerSpec);
   });
 
+  app.use(express.static("node_modules/swagger-ui-dist"));
   console.log(`Docs available at 'http://host:${port}/docs'`);
 };
