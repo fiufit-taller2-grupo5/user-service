@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { AppRouter } from "./routes/AppRouter";
 import { IAppProvider } from "./providers/IAppProvider";
+import { initSwaggerDocs } from "./docs/swagger";
 
 export class App {
   private readonly app: Express;
@@ -35,6 +36,9 @@ export class App {
     this.app.use(express.json());
     this.app.use(cors());
     this.app.use(morgan("common"));
+
+    initSwaggerDocs(this.app, this.port);
+
     const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
       console.log("Error handler called: ", err);
       console.log("req: ", req.url, req.method, req.body);
