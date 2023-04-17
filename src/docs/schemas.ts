@@ -49,3 +49,37 @@
  *           items:
  *             $ref: '#/components/schemas/User'
  */
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     UserMetadata:
+ *       type: object
+ *       properties:
+ *         userId:
+ *           type: integer
+ *           format: int64
+ *         weight:
+ *           type: number
+ *           format: float
+ *           nullable: true
+ *         height:
+ *           type: number
+ *           format: float
+ *           nullable: true
+ *         birthDate:
+ *           type: string
+ *           format: date-time
+ *           nullable: true
+ *         latitude:
+ *           type: number
+ *           format: float
+ *         longitude:
+ *           type: number
+ *           format: float
+ *       required:
+ *         - userId
+ *         - latitude
+ *         - longitude
+ */

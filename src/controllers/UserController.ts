@@ -3,6 +3,7 @@ import {
   BAD_REQUEST,
   CONFLICT,
   CREATED,
+  DELETED,
   INTERNAL_SERVER_ERROR,
   OK,
 } from "../constants/httpConstants";
@@ -27,7 +28,7 @@ export class UserController {
     try {
       const user = await this.userDal.deleteById(userId);
       console.log(`Deleting user of id ${user.id}...`);
-      res.status(OK).json({ status: "User deleted" });
+      res.status(DELETED).json({ status: "User deleted" });
     } catch (error: any) {
       res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
