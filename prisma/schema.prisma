@@ -20,8 +20,12 @@ model User {
 }
 
 model TrainingType {
-  id   Int    @id @default(autoincrement())
-  name String
+  id        Int      @id @default(autoincrement())
+  name      String
+  Trainer   Trainer? @relation(fields: [trainerId], references: [id])
+  trainerId Int?
+  Athlete   Athlete? @relation(fields: [athleteId], references: [id])
+  athleteId Int?
 }
 
 model UserMetadata {
@@ -33,4 +37,18 @@ model UserMetadata {
   latitude  Float
   longitude Float
   User      User      @relation(fields: [userId], references: [id])
+}
+
+model Trainer {
+  id          Int            @id @default(autoincrement())
+  userId      Int            @unique
+  specialties TrainingType[]
+}
+
+model Athlete {
+  id        Int            @id @default(autoincrement())
+  userId    Int            @unique
+  interests TrainingType[]
+  weight    Int?
+  height    Int?
 }
