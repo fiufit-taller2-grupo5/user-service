@@ -1,6 +1,7 @@
 import { PrismaClient, User } from "@prisma/client";
 import { ACTIVE_USER } from "../constants/userStateConstants";
-import { IUserDal, UserMetadata } from "./IUserDal";
+import { IUserDal } from "./IUserDal";
+import { UserMetadata } from "@prisma/client";
 
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
@@ -57,8 +58,8 @@ export class UserDal implements IUserDal {
           weight: userMetadata.weight,
           height: userMetadata.height,
           birthDate: userMetadata.birthDate,
-          latitude: userMetadata.latitude,
-          longitude: userMetadata.longitude,
+          location: userMetadata.location,
+          interests: userMetadata.interests,
         },
       });
     } else {
@@ -68,8 +69,8 @@ export class UserDal implements IUserDal {
           weight: userMetadata.weight,
           height: userMetadata.height,
           birthDate: userMetadata.birthDate,
-          latitude: userMetadata.latitude,
-          longitude: userMetadata.longitude,
+          location: userMetadata.location,
+          interests: userMetadata.interests,
         },
       });
     }
@@ -86,11 +87,11 @@ export class UserDal implements IUserDal {
 
     return {
       userId: userMetadata.userId,
-      weight: userMetadata.weight || undefined,
-      height: userMetadata.height || undefined,
-      birthDate: userMetadata.birthDate || undefined,
-      latitude: userMetadata.latitude,
-      longitude: userMetadata.longitude,
+      weight: userMetadata.weight,
+      height: userMetadata.height,
+      birthDate: userMetadata.birthDate,
+      location: userMetadata.location,
+      interests: userMetadata.interests,
     };
   }
 }
