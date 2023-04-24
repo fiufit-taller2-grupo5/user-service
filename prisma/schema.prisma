@@ -1,11 +1,15 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["user-service"]
 }
 
 model User {
@@ -13,42 +17,42 @@ model User {
   email        String        @unique
   name         String?
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime      @updatedAt
   state        String        @default("active")
   role         String        @default("user")
   UserMetadata UserMetadata?
+
+  @@schema("user-service")
 }
 
-model TrainingType {
-  id        Int      @id @default(autoincrement())
-  name      String
-  Trainer   Trainer? @relation(fields: [trainerId], references: [id])
-  trainerId Int?
-  Athlete   Athlete? @relation(fields: [athleteId], references: [id])
-  athleteId Int?
+enum Interests {
+  Outdoor
+  Indoor
+  Gym
+  Cardio
+  Groups
+  Solo
+  Intense
+  Relaxing
+
+  @@schema("user-service")
 }
 
 model UserMetadata {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @unique
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int         @id
   weight    Int?
   height    Int?
   birthDate DateTime?
-  latitude  Float
-  longitude Float
-  User      User      @relation(fields: [userId], references: [id])
+  location  String
+  interests Interests[]
+
+  @@schema("user-service")
 }
 
-model Trainer {
-  id          Int            @id @default(autoincrement())
-  userId      Int            @unique
-  specialties TrainingType[]
-}
+model TrainingType {
+  id   Int    @id @default(autoincrement())
+  name String
 
-model Athlete {
-  id        Int            @id @default(autoincrement())
-  userId    Int            @unique
-  interests TrainingType[]
-  weight    Int?
-  height    Int?
+  @@schema("user-service")
 }

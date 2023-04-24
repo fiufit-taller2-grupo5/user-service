@@ -82,8 +82,8 @@ export class UserController {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
 
-    const { weight, height, birthDate, latitude, longitude } = req.body;
-    if (!latitude || !longitude) {
+    const { weight, height, birthDate, location, interests } = req.body;
+    if (!location) {
       return res
         .status(BAD_REQUEST)
         .json({ error: "Missing latitude or longitude" });
@@ -95,8 +95,8 @@ export class UserController {
         weight,
         height,
         birthDate,
-        latitude,
-        longitude,
+        location,
+        interests,
       });
 
       console.log("Successfuly added user metadata for user with id " + userId);
@@ -134,8 +134,8 @@ export class UserController {
       weight: userMetadata.weight,
       height: userMetadata.height,
       birthDate: userMetadata.birthDate,
-      latitude: userMetadata.latitude,
-      longitude: userMetadata.longitude,
+      location: userMetadata.location,
+      interests: userMetadata.interests,
     });
   }
 }

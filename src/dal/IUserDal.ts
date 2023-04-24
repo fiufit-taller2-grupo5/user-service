@@ -1,13 +1,4 @@
-import { User } from "@prisma/client";
-
-export interface UserMetadata {
-  userId: number;
-  weight?: number;
-  height?: number;
-  birthDate?: Date;
-  latitude: number;
-  longitude: number;
-}
+import { User, UserMetadata } from "@prisma/client";
 
 export interface IUserDal {
   findAll(): Promise<User[]>;

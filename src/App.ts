@@ -46,7 +46,7 @@ export class App {
       if (
         err instanceof SyntaxError &&
         "status" in err &&
-        err.status === 400 &&
+        (err as any).status === 400 &&
         "body" in err
       ) {
         console.error("Bad JSON: ", err), req.body;
