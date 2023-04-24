@@ -2,6 +2,7 @@ import { PrismaClient, User } from "@prisma/client";
 import { ACTIVE_USER } from "../constants/userStateConstants";
 import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
+import { Interests } from "@prisma/client";
 
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
@@ -47,6 +48,10 @@ export class UserDal implements IUserDal {
         role: "user",
       },
     });
+  }
+
+  public async getInterests(): Promise<string[]> {
+    return Object.values(Interests);
   }
 
   public async addData(userMetadata: UserMetadata): Promise<void> {

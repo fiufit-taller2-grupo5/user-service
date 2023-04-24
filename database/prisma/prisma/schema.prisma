@@ -49,10 +49,3 @@ model UserMetadata {
 
   @@schema("user-service")
 }
-
-model TrainingType {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  @@schema("user-service")
-}

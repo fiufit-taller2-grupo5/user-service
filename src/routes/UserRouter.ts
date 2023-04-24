@@ -17,6 +17,33 @@ export class UserRouter {
 
   private initRoutes() {
     /**
+   * @openapi
+   * '/api/users/interests':
+   *   get:
+   *     tags:
+   *       - Users
+   *     description: "Returns all interests"
+   *     responses:
+   *       200:
+   *         description: "A list of interests"
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: string
+   *             example:
+   *               - "Outdoor"
+   *               - "Indoor"
+   *               - "Gym"
+   *               - "Cardio"
+   *               - "Groups"
+   *               - "Solo"
+   *               - "Intense"
+   *               - "Relaxing"
+   */
+    this.router.get("/interests", this.bind(this.userController.getInterests));
+    /**
      * @openapi
      * '/api/users':
      *   get:
@@ -178,6 +205,7 @@ export class UserRouter {
      */
     this.router.post("/", this.bind(this.userController.newUser));
   }
+
 
   private bind(method: Function) {
     return method.bind(this.userController);

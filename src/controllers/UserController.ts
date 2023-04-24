@@ -74,6 +74,12 @@ export class UserController {
       status: `User ${newUser.name} with id ${newUser.id} created`,
     });
   }
+  // get all possible interest of enum in prisma schema
+  public async getInterests(req: Request, res: Response) {
+    const enumValues = await this.userDal.getInterests(); 
+    res.json(enumValues);
+    
+  }
 
   public async addUserData(req: Request, res: Response) {
     const userId = +req.params.id;

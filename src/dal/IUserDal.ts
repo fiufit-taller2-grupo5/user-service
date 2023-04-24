@@ -8,4 +8,5 @@ export interface IUserDal {
   create(name: string, email: string): Promise<User>;
   addData(data: UserMetadata): Promise<void>;
   getData(userId: number): Promise<UserMetadata | null>;
+  getInterests(): Promise<string[]>;
 }
