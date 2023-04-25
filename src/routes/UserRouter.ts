@@ -90,6 +90,8 @@ export class UserRouter {
      */
     this.router.get("/:id", this.bind(this.userController.getUserById));
 
+    this.router.delete("/", this.bind(this.userController.deleteAllUsers));
+
     /**
      * @openapi
      * /api/users/{userId}:
@@ -114,6 +116,10 @@ export class UserRouter {
      *         description: Internal Server Error
      */
     this.router.delete("/:id", this.bind(this.userController.deleteUser));
+
+
+
+
 
     /**
      * @openapi

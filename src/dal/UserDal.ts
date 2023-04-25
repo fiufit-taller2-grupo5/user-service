@@ -4,6 +4,8 @@ import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
 
+
+
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
@@ -26,10 +28,27 @@ export class UserDal implements IUserDal {
   }
 
   public async deleteById(userId: number): Promise<User> {
+    // delete the metadata 
     return await this.prismaClient.user.delete({
       where: { id: userId },
     });
   }
+
+  public async deleteAllUsers(): Promise<void> {
+    // Find all user IDs
+    const userIds = await this.prismaClient.user.findMany({ select: { id: true } });
+
+
+
+    // Delete all users
+    for (const userId of userIds) {
+      await this.deleteById(userId.id);
+    }
+  }
+
+
+
+
 
   public async findByName(name: string): Promise<User | null> {
     return await this.prismaClient.user.findFirst({

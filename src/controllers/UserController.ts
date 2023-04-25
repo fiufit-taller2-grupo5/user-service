@@ -34,6 +34,18 @@ export class UserController {
     }
   }
 
+
+  public async deleteAllUsers(req: Request, res: Response) {
+    try {
+      await this.userDal.deleteAllUsers();
+      res.status(DELETED).json({ status: "All users deleted" });
+    } catch (error: any) {
+      res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+  }
+
+
+
   public async getUserById(req: Request, res: Response) {
     const userId: number = +req.params.id;
 
@@ -76,9 +88,9 @@ export class UserController {
   }
   // get all possible interest of enum in prisma schema
   public async getInterests(req: Request, res: Response) {
-    const enumValues = await this.userDal.getInterests(); 
+    const enumValues = await this.userDal.getInterests();
     res.json(enumValues);
-    
+
   }
 
   public async addUserData(req: Request, res: Response) {

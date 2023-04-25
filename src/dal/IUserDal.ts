@@ -9,4 +9,5 @@ export interface IUserDal {
   addData(data: UserMetadata): Promise<void>;
   getData(userId: number): Promise<UserMetadata | null>;
   getInterests(): Promise<string[]>;
+  deleteAllUsers(): Promise<void>;
 }
