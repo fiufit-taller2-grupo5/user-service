@@ -13,19 +13,19 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  state     String   @default("active")
-  role      String   @default("user")
-
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  name         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  state        String        @default("active")
+  role         String        @default("user")
   UserMetadata UserMetadata?
 
   @@schema("user-service")
 }
 
+// comentario
 enum Interests {
   Outdoor
   Indoor
@@ -40,7 +40,7 @@ enum Interests {
 }
 
 model UserMetadata {
-  user      User        @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId    Int         @id
   weight    Int?
   height    Int?
