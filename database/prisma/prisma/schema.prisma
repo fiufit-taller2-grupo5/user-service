@@ -25,7 +25,7 @@ model User {
   @@schema("user-service")
 }
 
-// camentario
+// comentario
 enum Interests {
   Outdoor
   Indoor
