@@ -1,3 +1,4 @@
 name: prisma-job-user
 deploy:
+  - kubectl delete job prisma-job-user
   - kubectl apply -f database/prisma/kubernetes
