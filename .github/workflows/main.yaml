@@ -6,7 +6,6 @@ on:
 jobs:
   okteto-deployment:
     runs-on: ubuntu-latest
-    needs: prisma-job-user
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
