@@ -3,16 +3,8 @@ on:
   push:
     branches:
       - master
-  workflow_run:
-    workflows:
-      - "Postgres DB Push"
-    types:
-      - completed
-    conclusions:
-      - success
 jobs:
   okteto-deployment:
-    if: github.event_name == 'push' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     needs: prisma-job-user
     steps:

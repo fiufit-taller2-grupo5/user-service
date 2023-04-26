@@ -8,8 +8,6 @@ on:
 jobs:
   prisma-job-user:
     runs-on: ubuntu-latest
-    outputs:
-      job-status: ${{ job.status }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -31,4 +29,3 @@ jobs:
           sha: ${{ github.sha }}
           okteto_yml: okteto_database.yml
           k8s_deployment_file: database/prisma/kubernetes/prisma-job-user.yml
-
