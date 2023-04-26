@@ -6,7 +6,7 @@ on:
     paths:
       - "database/prisma/**"
 jobs:
-  okteto-deployment:
+  prisma-job-user:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code

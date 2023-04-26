@@ -21,11 +21,12 @@ model User {
   state        String        @default("active")
   role         String        @default("user")
   UserMetadata UserMetadata?
+  lastName     String?
 
   @@schema("user-service")
 }
 
-// comentari
+// comentario
 enum Interests {
   Outdoor
   Indoor
