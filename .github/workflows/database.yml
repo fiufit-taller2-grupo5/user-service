@@ -8,6 +8,8 @@ on:
 jobs:
   prisma-job-user:
     runs-on: ubuntu-latest
+    outputs:
+      job-status: ${{ job.status }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -16,7 +18,7 @@ jobs:
         with:
           token: ${{ secrets.OKTETO_TOKEN }}
       
-      - name: Create devlopment environments namespace
+      - name: Create development environments namespace
         uses: okteto/namespace@latest
         with:
           namespace: prod-szwtomas
@@ -29,3 +31,4 @@ jobs:
           sha: ${{ github.sha }}
           okteto_yml: okteto_database.yml
           k8s_deployment_file: database/prisma/kubernetes/prisma-job-user.yml
+
