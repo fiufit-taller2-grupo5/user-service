@@ -16,6 +16,10 @@ export class UserController {
     this.userDal = userDal;
   }
 
+  public errorHandler(e: any, res: Response) {
+    return res.status(INTERNAL_SERVER_ERROR).json({ error: e.message, metadata: e.meta });
+  }
+
   public async getAllUsers(_req: Request, res: Response) {
     const users = await this.userDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
@@ -28,9 +32,9 @@ export class UserController {
     try {
       const user = await this.userDal.deleteById(userId);
       console.log(`Deleting user of id ${user.id}...`);
-      res.status(DELETED).json({ status: "User deleted" });
+      return res.status(DELETED).json({ status: "User deleted" });
     } catch (error: any) {
-      res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
 
@@ -38,9 +42,9 @@ export class UserController {
   public async deleteAllUsers(req: Request, res: Response) {
     try {
       await this.userDal.deleteAllUsers();
-      res.status(DELETED).json({ status: "All users deleted" });
+      return res.status(DELETED).json({ status: "All users deleted" });
     } catch (error: any) {
-      res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
 
@@ -59,7 +63,7 @@ export class UserController {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.status(OK).json({
+    return res.status(OK).json({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -80,16 +84,22 @@ export class UserController {
         .json({ error: `User with name ${name} already exists` });
     }
 
+    if (await this.userDal.findByEmail(email)) {
+      return res
+        .status(CONFLICT)
+        .json({ error: `User with email ${email} already exists` });
+    }
+
     const newUser = await this.userDal.create(name, email);
     console.log(newUser);
-    res.status(CREATED).json({
+    return res.status(CREATED).json({
       status: `User ${newUser.name} with id ${newUser.id} created`,
     });
   }
   // get all possible interest of enum in prisma schema
   public async getInterests(req: Request, res: Response) {
     const enumValues = await this.userDal.getInterests();
-    res.json(enumValues);
+    return res.json(enumValues);
 
   }
 
@@ -102,12 +112,11 @@ export class UserController {
 
     const { weight, height, birthDate, location, interests } = req.body;
     if (!location) {
-      return res
-        .status(BAD_REQUEST)
-        .json({ error: "Missing latitude or longitude" });
+      return res.status(BAD_REQUEST).json({ error: "Missing location" });
     }
 
     try {
+
       await this.userDal.addData({
         userId,
         weight,
@@ -117,15 +126,13 @@ export class UserController {
         interests,
       });
 
-      console.log("Successfuly added user metadata for user with id " + userId);
+      console.log("Successfully added xdd user metadata for user with id " + userId);
 
-      res
-        .status(OK)
-        .json({ status: `Metadatadata added for user with id ${userId}` });
+      return res.status(OK).json({ status: `Metadata added for user with id ${userId}` });
     } catch (err: any) {
-      console.log("Failed adding user metadata for user with id " + userId);
+      console.log("Error:");
       console.log(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
+      return res.status(409).json({ error: err.message })
     }
   }
 
@@ -148,7 +155,7 @@ export class UserController {
     console.log(`Got metadata for user with id ${userId}:`);
     console.log(userMetadata);
 
-    res.status(OK).json({
+    return res.status(OK).json({
       weight: userMetadata.weight,
       height: userMetadata.height,
       birthDate: userMetadata.birthDate,

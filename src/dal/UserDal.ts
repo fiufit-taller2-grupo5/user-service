@@ -56,7 +56,20 @@ export class UserDal implements IUserDal {
     });
   }
 
+  public async findByEmail(email: string): Promise<User | null> {
+    return await this.prismaClient.user.findFirst({
+      where: { email: email, role: "user" },
+    });
+  }
+
   public async create(name: string, email: string): Promise<User> {
+    // check if mail is already in use
+    const user = await this.prismaClient.user.findFirst({
+      where: { email: email },
+    });
+    if (user) {
+      throw new Error("Email already in use");
+    }
     return await this.prismaClient.user.create({
       data: {
         name,
