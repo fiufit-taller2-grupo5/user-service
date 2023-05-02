@@ -26,8 +26,6 @@ export class UserController {
 
   public async getAllUsers(req: Request, res: Response) {
     if (req.query.id !== undefined) {
-      // We should search user by id
-      console.log("Looking for user with id " + req.query.id);
       return await this.getUserById(req, res, +req.query.id);
     }
 
@@ -41,8 +39,9 @@ export class UserController {
     const userId: number = +req.params.id;
     try {
       const user = await this.userDal.deleteById(userId);
-      console.log(`Deleting user of id ${user.id}...`);
-      return res.status(DELETED).json({ status: "User deleted" });
+      return res
+        .status(DELETED)
+        .json({ status: `User of id ${user.id} deleted` });
     } catch (error: any) {
       return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
@@ -58,7 +57,6 @@ export class UserController {
   }
 
   private async getUserById(req: Request, res: Response, userId: number) {
-    console.log("Hello from getUserById");
     if (isNaN(userId)) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
@@ -80,7 +78,6 @@ export class UserController {
   public async newUser(req: Request, res: Response) {
     const { name, email } = req.body;
     if (!name || !email) {
-      console.error("Missing name or email");
       return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
 
@@ -97,19 +94,17 @@ export class UserController {
     }
 
     const newUser = await this.userDal.create(name, email);
-    console.log(newUser);
     return res.status(CREATED).json({
       status: `User ${newUser.name} with id ${newUser.id} created`,
     });
   }
-  // get all possible interest of enum in prisma schema
+
   public async getInterests(req: Request, res: Response) {
     const enumValues = await this.userDal.getInterests();
     return res.json(enumValues);
   }
 
   public async addUserData(req: Request, res: Response) {
-    console.log("Hello from addUserData");
     const userId = +req.params.id;
 
     if (isNaN(userId)) {
@@ -131,10 +126,6 @@ export class UserController {
         interests,
       });
 
-      console.log(
-        "Successfully added xdd user metadata for user with id " + userId
-      );
-
       return res
         .status(OK)
         .json({ status: `Metadata added for user with id ${userId}` });
@@ -146,7 +137,6 @@ export class UserController {
   }
 
   public async getUserData(req: Request, res: Response) {
-    console.log("Hello from getUserData");
     const userId = +req.params.id;
 
     if (isNaN(userId)) {
@@ -161,9 +151,6 @@ export class UserController {
         .status(404)
         .json({ error: `No metadata found for user with id ${userId}` });
     }
-
-    console.log(`Got metadata for user with id ${userId}:`);
-    console.log(userMetadata);
 
     return res.status(OK).json({
       weight: userMetadata.weight,
@@ -190,7 +177,6 @@ export class UserController {
   }
 
   public async blockUser(req: Request, res: Response) {
-    console.log("Hello from blockUser");
     const userId = +req.body.userId;
     if (!userId) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
@@ -209,7 +195,6 @@ export class UserController {
   }
 
   public async unblockUser(req: Request, res: Response) {
-    console.log("Hello from unblockUser");
     const userId = +req.body.userId;
     if (!userId) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
@@ -228,10 +213,7 @@ export class UserController {
   }
 
   public async getBlockedUsers(_req: Request, res: Response) {
-    console.log("Getting blocked users");
-
     try {
-      console.log("About to look for blocked users...");
       const users = await this.userDal.blockedUsers();
       console.log(`Found ${users.length} blocked users`);
       if (users == null) {
