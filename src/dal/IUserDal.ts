@@ -13,5 +13,5 @@ export interface IUserDal {
   deleteAllUsers(): Promise<void>;
   blockUser(userId: number): Promise<User | null>;
   unblockUser(userId: number): Promise<User | null>;
-  getBlockedUsers(): Promise<User[]>;
+  blockedUsers(): Promise<User[]>;
 }
