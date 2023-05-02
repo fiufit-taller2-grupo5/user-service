@@ -220,10 +220,18 @@ export class UserController {
   }
 
   public async getBlockedUsers(req: Request, res: Response) {
+    console.log("Getting blocked users");
     const userId = +req.params.id;
+    if (userId) {
+      console.log("No blocked users");
+    } else {
+      console.log(`Looking for blocked user with id ${userId}`);
+    }
 
     try {
+      console.log("About to look for blocked users...");
       const users = await this.userDal.blockedUsers();
+      console.log(`Found ${users.length} blocked users`);
       if (users && users.length === 0) {
         return res.status(NOT_FOUND).json({ error: "No blocked users found" });
       }
