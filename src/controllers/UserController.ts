@@ -8,6 +8,7 @@ import {
   OK,
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
+import { getResetPasswordUrl } from "../firebase/frebaseUtils";
 
 export class UserController {
   private userDal: IUserDal;
@@ -164,4 +165,13 @@ export class UserController {
       interests: userMetadata.interests,
     });
   }
+
+  public async changePassword(req: Request, res: Response) {
+    const { email } = req.body;
+    if (!email ) {
+      return res.status(400).json({ error: "email is required" });
+    }
+
+    const url = await getResetPasswordUrl(email);
+    return res.status(200).json({ url: url });
 }
