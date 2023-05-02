@@ -167,12 +167,17 @@ export class UserController {
   }
 
   public async changePassword(req: Request, res: Response) {
-    const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ error: "email is required" });
-    }
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: "email is required" });
+      }
 
-    const url = await getResetPasswordUrl(email);
-    return res.status(200).json({ url: url });
+      const url = await getResetPasswordUrl(email);
+      return res.status(200).json({ url: url });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: err });
+    }
   }
 }
