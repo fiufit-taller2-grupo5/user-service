@@ -17,7 +17,9 @@ export class UserController {
   }
 
   public errorHandler(e: any, res: Response) {
-    return res.status(INTERNAL_SERVER_ERROR).json({ error: e.message, metadata: e.meta });
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json({ error: e.message, metadata: e.meta });
   }
 
   public async getAllUsers(_req: Request, res: Response) {
@@ -38,7 +40,6 @@ export class UserController {
     }
   }
 
-
   public async deleteAllUsers(req: Request, res: Response) {
     try {
       await this.userDal.deleteAllUsers();
@@ -47,8 +48,6 @@ export class UserController {
       return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
-
-
 
   public async getUserById(req: Request, res: Response) {
     const userId: number = +req.params.id;
@@ -100,7 +99,6 @@ export class UserController {
   public async getInterests(req: Request, res: Response) {
     const enumValues = await this.userDal.getInterests();
     return res.json(enumValues);
-
   }
 
   public async addUserData(req: Request, res: Response) {
@@ -116,7 +114,6 @@ export class UserController {
     }
 
     try {
-
       await this.userDal.addData({
         userId,
         weight,
@@ -126,13 +123,17 @@ export class UserController {
         interests,
       });
 
-      console.log("Successfully added xdd user metadata for user with id " + userId);
+      console.log(
+        "Successfully added xdd user metadata for user with id " + userId
+      );
 
-      return res.status(OK).json({ status: `Metadata added for user with id ${userId}` });
+      return res
+        .status(OK)
+        .json({ status: `Metadata added for user with id ${userId}` });
     } catch (err: any) {
       console.log("Error:");
       console.log(err);
-      return res.status(409).json({ error: err.message })
+      return res.status(409).json({ error: err.message });
     }
   }
 
