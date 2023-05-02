@@ -211,6 +211,12 @@ export class UserRouter {
       "/changepassword",
       this.bind(this.userController.changePassword)
     );
+
+    this.router.post("/block", this.bind(this.userController.blockUser));
+
+    this.router.post("/unblock", this.bind(this.userController.unblockUser));
+
+    this.router.get("/blocked", this.bind(this.userController.getBlockedUsers));
   }
 
   private bind(method: Function) {

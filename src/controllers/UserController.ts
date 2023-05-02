@@ -5,6 +5,7 @@ import {
   CREATED,
   DELETED,
   INTERNAL_SERVER_ERROR,
+  NOT_FOUND,
   OK,
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
@@ -170,14 +171,55 @@ export class UserController {
     try {
       const { email } = req.body;
       if (!email) {
-        return res.status(400).json({ error: "email is required" });
+        return res.status(BAD_REQUEST).json({ error: "email is required" });
       }
 
       const url = await getResetPasswordUrl(email);
-      return res.status(200).json({ url: url });
+      return res.status(OK).json({ url: url });
     } catch (err) {
       console.log(err);
-      return res.status(404).json({ error: err });
+      return res.status(NOT_FOUND).json({ error: err });
+    }
+  }
+
+  public async blockUser(req: Request, res: Response) {
+    const userId: number = +req.params.id;
+    try {
+      const user = await this.userDal.blockUser(userId);
+      if (!user) {
+        return res.status(NOT_FOUND).json({ error: "User not found" });
+      } else {
+        return res.status(OK).json({ status: "User blocked" });
+      }
+    } catch (error: any) {
+      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+  }
+
+  public async unblockUser(req: Request, res: Response) {
+    const userId: number = +req.params.id;
+    try {
+      const user = await this.userDal.unblockUser(userId);
+      if (!user) {
+        return res.status(NOT_FOUND).json({ error: "User not found" });
+      } else {
+        return res.status(OK).json({ status: "User unblocked" });
+      }
+    } catch (error: any) {
+      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+  }
+
+  public async getBlockedUsers(req: Request, res: Response) {
+    try {
+      const users = await this.userDal.getBlockedUsers();
+      if (users && users.length === 0) {
+        return res.status(NOT_FOUND).json({ error: "No blocked users found" });
+      }
+
+      return res.status(OK).json(users);
+    } catch (error: any) {
+      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
 }

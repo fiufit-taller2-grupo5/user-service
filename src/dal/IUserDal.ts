@@ -11,4 +11,7 @@ export interface IUserDal {
   getData(userId: number): Promise<UserMetadata | null>;
   getInterests(): Promise<string[]>;
   deleteAllUsers(): Promise<void>;
+  blockUser(userId: number): Promise<User | null>;
+  unblockUser(userId: number): Promise<User | null>;
+  getBlockedUsers(): Promise<User[]>;
 }

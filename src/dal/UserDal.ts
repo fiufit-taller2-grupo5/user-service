@@ -4,8 +4,6 @@ import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
 
-
-
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
@@ -17,7 +15,7 @@ export class UserDal implements IUserDal {
     return await this.prismaClient.user.findMany({
       where: {
         role: "user",
-      }
+      },
     });
   }
 
@@ -28,7 +26,7 @@ export class UserDal implements IUserDal {
   }
 
   public async deleteById(userId: number): Promise<User> {
-    // delete the metadata 
+    // delete the metadata
     return await this.prismaClient.user.delete({
       where: { id: userId },
     });
@@ -36,19 +34,15 @@ export class UserDal implements IUserDal {
 
   public async deleteAllUsers(): Promise<void> {
     // Find all user IDs
-    const userIds = await this.prismaClient.user.findMany({ select: { id: true } });
-
-
+    const userIds = await this.prismaClient.user.findMany({
+      select: { id: true },
+    });
 
     // Delete all users
     for (const userId of userIds) {
       await this.deleteById(userId.id);
     }
   }
-
-
-
-
 
   public async findByName(name: string): Promise<User | null> {
     return await this.prismaClient.user.findFirst({
@@ -130,5 +124,25 @@ export class UserDal implements IUserDal {
       location: userMetadata.location,
       interests: userMetadata.interests,
     };
+  }
+
+  public blockUser(userId: number): Promise<User> {
+    return this.prismaClient.user.update({
+      where: { id: userId },
+      data: { state: "blocked" },
+    });
+  }
+
+  public unblockUser(userId: number): Promise<User> {
+    return this.prismaClient.user.update({
+      where: { id: userId },
+      data: { state: "active" },
+    });
+  }
+
+  public blockedUsers(): Promise<User[]> {
+    return this.prismaClient.user.findMany({
+      where: { state: "blocked" },
+    });
   }
 }
