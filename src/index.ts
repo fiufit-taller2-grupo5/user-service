@@ -5,7 +5,7 @@ import { AppProvider } from "./providers/AppProvider";
 
 dotenv.config();
 
-const port = 80;
+const port = 8009;
 
 const appProvider = new AppProvider();
 

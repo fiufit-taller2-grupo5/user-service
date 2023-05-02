@@ -24,7 +24,13 @@ export class UserController {
       .json({ error: e.message, metadata: e.meta });
   }
 
-  public async getAllUsers(_req: Request, res: Response) {
+  public async getAllUsers(req: Request, res: Response) {
+    if (req.query.id !== undefined) {
+      // We should search user by id
+      console.log("Looking for user with id " + req.query.id);
+      return await this.getUserById(req, res, +req.query.id);
+    }
+
     const users = await this.userDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
@@ -51,9 +57,8 @@ export class UserController {
     }
   }
 
-  public async getUserById(req: Request, res: Response) {
-    const userId: number = +req.params.id;
-
+  private async getUserById(req: Request, res: Response, userId: number) {
+    console.log("Hello from getUserById");
     if (isNaN(userId)) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
@@ -104,6 +109,7 @@ export class UserController {
   }
 
   public async addUserData(req: Request, res: Response) {
+    console.log("Hello from addUserData");
     const userId = +req.params.id;
 
     if (isNaN(userId)) {
@@ -140,6 +146,7 @@ export class UserController {
   }
 
   public async getUserData(req: Request, res: Response) {
+    console.log("Hello from getUserData");
     const userId = +req.params.id;
 
     if (isNaN(userId)) {
@@ -183,6 +190,7 @@ export class UserController {
   }
 
   public async blockUser(req: Request, res: Response) {
+    console.log("Hello from blockUser");
     const userId = +req.body.userId;
     if (!userId) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
@@ -201,6 +209,7 @@ export class UserController {
   }
 
   public async unblockUser(req: Request, res: Response) {
+    console.log("Hello from unblockUser");
     const userId = +req.body.userId;
     if (!userId) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });

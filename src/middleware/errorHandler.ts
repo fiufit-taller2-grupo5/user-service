@@ -1,6 +1,8 @@
 import { ErrorRequestHandler } from "express";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  console.log("Hello");
+
   console.log("Error handler called: ", err);
   console.log("req: ", req.url, req.method, req.body);
   console.log("res: ", res.statusCode);

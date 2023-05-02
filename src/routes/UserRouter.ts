@@ -61,35 +61,6 @@ export class UserRouter {
      */
     this.router.get("/", this.bind(this.userController.getAllUsers));
 
-    /**
-     * @openapi
-     * /api/users/{userId}:
-     *   get:
-     *     summary: Retrieve a user by ID
-     *     tags:
-     *       - Users
-     *     parameters:
-     *       - name: userId
-     *         in: path
-     *         description: ID of the user to retrieve
-     *         required: true
-     *         schema:
-     *           type: integer
-     *           format: int64
-     *     responses:
-     *       '200':
-     *         description: OK
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/User'
-     *       '404':
-     *         description: User not found
-     *       '500':
-     *         description: Internal Server Error
-     */
-    this.router.get("/:id", this.bind(this.userController.getUserById));
-
     this.router.delete("/", this.bind(this.userController.deleteAllUsers));
 
     /**
