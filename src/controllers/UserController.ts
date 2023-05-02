@@ -177,7 +177,7 @@ export class UserController {
       return res.status(200).json({ url: url });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ error: err });
+      return res.status(404).json({ error: err });
     }
   }
 }
