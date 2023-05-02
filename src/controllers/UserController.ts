@@ -10,6 +10,7 @@ import {
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
 import { getResetPasswordUrl } from "../firebase/frebaseUtils";
+import { User } from "@prisma/client";
 
 export class UserController {
   private userDal: IUserDal;
@@ -183,7 +184,11 @@ export class UserController {
   }
 
   public async blockUser(req: Request, res: Response) {
-    const userId: number = +req.params.id;
+    const userId = +req.body.userId;
+    if (!userId) {
+      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+    }
+
     try {
       const user = await this.userDal.blockUser(userId);
       if (!user) {
@@ -197,7 +202,11 @@ export class UserController {
   }
 
   public async unblockUser(req: Request, res: Response) {
-    const userId: number = +req.params.id;
+    const userId = +req.body.userId;
+    if (!userId) {
+      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+    }
+
     try {
       const user = await this.userDal.unblockUser(userId);
       if (!user) {
@@ -211,10 +220,23 @@ export class UserController {
   }
 
   public async getBlockedUsers(req: Request, res: Response) {
+    const userId = +req.params.id;
+
     try {
       const users = await this.userDal.blockedUsers();
       if (users && users.length === 0) {
         return res.status(NOT_FOUND).json({ error: "No blocked users found" });
+      }
+
+      if (userId) {
+        const blockedUser = users.find((user: User) => user.id === userId);
+        if (!blockedUser) {
+          return res
+            .status(NOT_FOUND)
+            .json({ error: "User not found or is not blocked" });
+        } else {
+          return res.status(OK).json(blockedUser);
+        }
       }
 
       return res.status(OK).json(users);
