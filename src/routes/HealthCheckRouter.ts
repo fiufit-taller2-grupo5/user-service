@@ -18,7 +18,7 @@ export class HealthCheckRouter {
   private initRoutes() {
     /**
      * @openapi
-     * /health-check:
+     * /health:
      *   get:
      *     tags:
      *       - HealthCheck

@@ -19,7 +19,7 @@ export class AppRouter {
   }
 
   public initRoutes(expressApp: Express) {
-    expressApp.use("/health-check", this.healthCheckRouter.getRouter());
+    expressApp.use("/health", this.healthCheckRouter.getRouter());
     expressApp.use("/api/users", this.userRouter.getRouter());
     expressApp.use("/api/admins", this.adminRouter.getRouter());
   }
