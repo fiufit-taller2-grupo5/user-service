@@ -28,6 +28,9 @@ export class UserController {
     if (req.query.id !== undefined) {
       return await this.getUserById(req, res, +req.query.id);
     }
+    if (req.query.email !== undefined) {
+      return await this.getUserByEmail(req, res, req.query.email as string);
+    }
 
     const users = await this.userDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
@@ -62,6 +65,21 @@ export class UserController {
     }
 
     const user = await this.userDal.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(OK).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      state: user.state,
+    });
+  }
+
+  private async getUserByEmail(req: Request, res: Response, email: string) {
+    const user = await this.userDal.findByEmail(email);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
