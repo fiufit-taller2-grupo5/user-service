@@ -65,7 +65,7 @@ export class AdminRouter {
 
     /**
      * @openapi
-     * /api/users/{adminId}:
+     * /api/admins/{adminId}:
      *   delete:
      *     summary: Delete an admin by ID
      *     tags:
@@ -87,6 +87,7 @@ export class AdminRouter {
      *         description: Internal Server Error
      */
     this.router.delete("/:id", this.bind(this.AdminController.deleteAdmin));
+
 
     /**
      * @openapi

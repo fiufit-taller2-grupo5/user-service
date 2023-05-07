@@ -4,6 +4,7 @@ import {
   CREATED,
   INTERNAL_SERVER_ERROR,
   OK,
+  CONFLICT,
 } from "../constants/httpConstants";
 import { IAdminDal } from "../dal/IAdminDal";
 
@@ -22,48 +23,87 @@ export class AdminController {
   }
 
   public async deleteAdmin(req: Request, res: Response) {
-    const userId: number = +req.params.id;
+    const adminId: number = +req.params.id;
     try {
-      const user = await this.adminDal.deleteById(userId);
-      console.log(`Deleting admin of id ${user.id}`);
-      res.status(OK).json({ status: "User deleted" });
+      const admin = await this.adminDal.deleteById(adminId);
+      console.log(`Deleting admin of id ${admin.id}`);
+      res.status(OK).json({ status: "Admin deleted" });
     } catch (error: any) {
       res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
 
-  public async getAdminById(req: Request, res: Response) {
-    const userId: number = +req.params.id;
 
-    if (isNaN(userId)) {
+  public async findByName(req: Request, res: Response) {
+    const name: string = req.params.name;
+    const admin = await this.adminDal.findByName(name);
+    if (!admin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+    res.status(OK).json({
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+      state: admin.state,
+    });
+  }
+
+  public async findAdminByEmail(req: Request, res: Response) {
+    const email: string = req.params.email;
+    const admin = await this.adminDal.findByEmail(email);
+    if (!admin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+    res.status(OK).json({
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+      state: admin.state,
+    });
+  }
+
+
+  public async getAdminById(req: Request, res: Response) {
+    const adminId: number = +req.params.id;
+
+    if (isNaN(adminId)) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
 
-    const user = await this.adminDal.findById(userId);
+    const admin = await this.adminDal.findById(adminId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (!admin) {
+      return res.status(404).json({ error: "Admin not found" });
     }
 
     res.status(OK).json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      state: user.state,
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+      state: admin.state,
     });
   }
 
   public async newAdmin(req: Request, res: Response) {
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
     if (!name || !email) {
       console.error("Missing name or email");
       return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
 
-    const newUser = await this.adminDal.create(name, email);
-    console.log(newUser);
-    res.status(CREATED).json({
-      status: `User ${newUser.name} with id ${newUser.id} created`,
+    if (await this.adminDal.findByEmail(email)) {
+      console.error(`Admin with email ${email} already exists`);
+      return res
+        .status(CONFLICT)
+        .json({ error: `Admin with email ${email} already exists` });
+    }
+
+    const newAdminCreated = await this.adminDal.create(name, email);
+    console.log(newAdminCreated);
+    return res.status(CREATED).json({
+      status: `Admin ${newAdminCreated.name} with id ${newAdminCreated.id} created`,
     });
   }
+
+
 }

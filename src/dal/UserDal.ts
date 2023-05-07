@@ -27,14 +27,22 @@ export class UserDal implements IUserDal {
 
   public async deleteById(userId: number): Promise<User> {
     // delete the metadata
+    const user = await this.findById(userId);
+    if (user === null) {
+      throw new Error("User not found");
+    }
+    if (user.role !== "user") {
+      throw new Error("User is not a user");
+    }
     return await this.prismaClient.user.delete({
       where: { id: userId },
     });
   }
 
   public async deleteAllUsers(): Promise<void> {
-    // Find all user IDs
+    // Find all user IDs with role "user"
     const userIds = await this.prismaClient.user.findMany({
+      where: { role: "user" },
       select: { id: true },
     });
 

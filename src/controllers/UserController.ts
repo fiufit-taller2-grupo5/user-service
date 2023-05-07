@@ -99,12 +99,6 @@ export class UserController {
       return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
 
-    if (await this.userDal.findByName(name)) {
-      return res
-        .status(CONFLICT)
-        .json({ error: `User with name ${name} already exists` });
-    }
-
     if (await this.userDal.findByEmail(email)) {
       return res
         .status(CONFLICT)

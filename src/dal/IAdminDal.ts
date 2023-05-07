@@ -7,4 +7,6 @@ export interface IAdminDal {
   findById(userId: number): Promise<Admin | null>;
   deleteById(userId: number): Promise<Admin>;
   create(name: string, email: string): Promise<Admin>;
+  findByName(name: string): Promise<Admin | null>;
+  findByEmail(email: string): Promise<Admin | null>;
 }
