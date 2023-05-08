@@ -88,6 +88,11 @@ export class UserRouter {
      */
     this.router.delete("/:id", this.bind(this.userController.deleteUser));
 
+    this.router.get(
+      "/:id",
+      this.bind(this.userController.getUserEntireDataById)
+    );
+
     /**
      * @openapi
      * /api/users/{userId}/metadata:
@@ -119,6 +124,8 @@ export class UserRouter {
       "/:id/metadata",
       this.bind(this.userController.getUserData)
     );
+
+
 
     /**
      * @openapi

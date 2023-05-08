@@ -25,6 +25,13 @@ export class UserDal implements IUserDal {
     });
   }
 
+  public async findByIdWithMetadata(userId: number): Promise<User | null> {
+    return await this.prismaClient.user.findFirst({
+      where: { id: userId, role: "user" },
+      include: { UserMetadata: true },
+    });
+  }
+
   public async deleteById(userId: number): Promise<User> {
     // delete the metadata
     const user = await this.findById(userId);
@@ -89,6 +96,12 @@ export class UserDal implements IUserDal {
   }
 
   public async addData(userMetadata: UserMetadata): Promise<void> {
+    // if no user with this id exists return error 
+    const user = await this.findById(userMetadata.userId);
+    if (!user) {
+      const id = userMetadata.userId;
+      throw new Error("User with id " + id + " not found");
+    }
     const userData = await this.getData(userMetadata.userId);
     if (!userData) {
       await this.prismaClient.userMetadata.create({

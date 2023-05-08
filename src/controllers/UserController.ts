@@ -148,6 +148,20 @@ export class UserController {
     }
   }
 
+  public async getUserEntireDataById(req: Request, res: Response) {
+    const userId = +req.params.id;
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+    }
+    const userWithMetadata = await this.userDal.findByIdWithMetadata(userId);
+    if (!userWithMetadata) {
+      return res.status(NOT_FOUND).json({ error: "User not found" });
+    }
+    return res.status(OK).json(userWithMetadata);
+    // return code 2 just to see if this works 
+    // return res.status(OK).json({ code: 2 });
+  }
+
   public async getUserData(req: Request, res: Response) {
     const userId = +req.params.id;
 
