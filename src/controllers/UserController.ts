@@ -70,12 +70,7 @@ export class UserController {
       return res.status(404).json({ error: "User not found" });
     }
 
-    return res.status(OK).json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      state: user.state,
-    });
+    return res.status(OK).json(user);
   }
 
   private async getUserByEmail(req: Request, res: Response, email: string) {
@@ -85,12 +80,7 @@ export class UserController {
       return res.status(404).json({ error: "User not found" });
     }
 
-    return res.status(OK).json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      state: user.state,
-    });
+    return res.status(OK).json(user);
   }
 
   public async newUser(req: Request, res: Response) {
