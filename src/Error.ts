@@ -1,5 +1,17 @@
 import { IError } from "./IError";
 import { NOT_FOUND, USER_NOT_ADMIN, USER_IS_ADMIN, EMAIL_IN_USE } from "./constants/responseMessages";
+// export const OK_CODE = 200;
+// export const CREATED_CODE = 201;
+// export const DELETED_CODE = 204;
+// export const BAD_REQUEST_CODE = 400;
+// export const UNAUTHORIZED_CODE = 401;
+// export const NOT_FOUND_CODE = 404;
+// export const CONFLICT_CODE = 409;
+// export const INTERNAL_SERVER_ERROR_CODE = 500;
+// import all 
+import { OK_CODE, CREATED_CODE, DELETED_CODE, BAD_REQUEST_CODE, UNAUTHORIZED_CODE, INCORRECT_ROLE_CODE, NOT_FOUND_CODE, CONFLICT_CODE, INTERNAL_SERVER_ERROR_CODE } from "./constants/httpConstants";
+
+
 export class Error implements IError {
     private message: string;
     private code: number;
@@ -20,15 +32,15 @@ export class Error implements IError {
     private getCodeFromMessage(message: string): number {
         switch (message) {
             case NOT_FOUND:
-                return 404;
+                return NOT_FOUND_CODE;
             case USER_NOT_ADMIN:
-                return 403;
+                return INCORRECT_ROLE_CODE;
             case USER_IS_ADMIN:
-                return 403;
+                return INCORRECT_ROLE_CODE;
             case EMAIL_IN_USE:
-                return 409;
+                return CONFLICT_CODE;
             default:
-                return 500;
+                return INTERNAL_SERVER_ERROR_CODE;
         }
     }
 }

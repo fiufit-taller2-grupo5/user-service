@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import {
-  BAD_REQUEST,
-  CREATED,
-  INTERNAL_SERVER_ERROR,
-  OK,
-  CONFLICT,
+  BAD_REQUEST_CODE,
+  CREATED_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+  OK_CODE,
+  CONFLICT_CODE,
 } from "../constants/httpConstants";
 import { IAdminDal } from "../dal/IAdminDal";
 import { Error } from "../Error";
@@ -20,7 +20,7 @@ export class AdminController {
     if (error instanceof Error) {
       return res.status(error.getCode()).json({ error: error.getMessage() });
     } else {
-      return res.status(INTERNAL_SERVER_ERROR).json({ unexpectedError: error.message });
+      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ unexpectedError: error.message });
     }
   }
 
@@ -29,9 +29,9 @@ export class AdminController {
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${admins.length}`);
     if (admins.length === 0) {
-      return res.status(OK).json({ message: "No admins found" });
+      return res.status(OK_CODE).json({ message: "No admins found" });
     }
-    return res.status(OK).json(admins);
+    return res.status(OK_CODE).json(admins);
   }
 
   public async deleteAdmin(req: Request, res: Response) {
@@ -39,7 +39,7 @@ export class AdminController {
     try {
       const admin = await this.adminDal.deleteById(adminId);
       console.log(`Deleting admin of id ${admin.id}`);
-      return res.status(OK).json({ status: "Admin deleted" });
+      return res.status(OK_CODE).json({ status: "Admin deleted" });
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -50,7 +50,7 @@ export class AdminController {
     const name: string = req.params.name;
     try {
       const admin = await this.adminDal.findByName(name);
-      return res.status(OK).json(admin);
+      return res.status(OK_CODE).json(admin);
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -60,7 +60,7 @@ export class AdminController {
     const email: string = req.params.email;
     try {
       const admin = await this.adminDal.findByEmail(email);
-      return res.status(OK).json(admin);
+      return res.status(OK_CODE).json(admin);
     }
     catch (error: any) {
       return this.errorHandler(error, res);
@@ -72,12 +72,12 @@ export class AdminController {
     const adminId: number = +req.params.id;
 
     if (isNaN(adminId)) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
     try {
       const admin = await this.adminDal.findById(adminId);
-      return res.status(OK).json(admin);
+      return res.status(OK_CODE).json(admin);
     }
     catch (error: any) {
       return this.errorHandler(error, res);
@@ -88,13 +88,13 @@ export class AdminController {
     const { name, email, password } = req.body;
     if (!name || !email) {
       console.error("Missing name or email");
-      return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Missing name or email" });
     }
 
     try {
       const admin = await this.adminDal.create(name, email);
-      return res.status(CREATED).json({
-        status: `Admin created`,
+      return res.status(CREATED_CODE).json({
+        status: `Admin created_CODE`,
       });
 
     }

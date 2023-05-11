@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import {
-  BAD_REQUEST,
-  CONFLICT,
-  CREATED,
-  DELETED,
-  INTERNAL_SERVER_ERROR,
-  NOT_FOUND,
-  OK,
+  BAD_REQUEST_CODE,
+  CONFLICT_CODE,
+  CREATED_CODE,
+  DELETED_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+  NOT_FOUND_CODE,
+  OK_CODE,
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
 import { getResetPasswordUrl } from "../firebase/frebaseUtils";
@@ -23,7 +23,7 @@ export class UserController {
     if (error instanceof Error) {
       return res.status(error.getCode()).json({ error: error.getMessage() });
     } else {
-      return res.status(INTERNAL_SERVER_ERROR).json({ unexpectedError: error.message });
+      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ unexpectedError: error.message });
     }
   }
 
@@ -39,9 +39,9 @@ export class UserController {
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
     if (users.length === 0) {
-      return res.status(OK).json({ message: "No users found" });
+      return res.status(OK_CODE).json({ message: "No users found" });
     }
-    return res.status(OK).json(users);
+    return res.status(OK_CODE).json(users);
   }
 
   public async deleteUser(req: Request, res: Response) {
@@ -49,8 +49,8 @@ export class UserController {
     try {
       const user = await this.userDal.deleteById(userId);
       return res
-        .status(DELETED)
-        .json({ status: `User of id ${user.id} deleted` });
+        .status(DELETED_CODE)
+        .json({ status: `User of id ${user.id} deleted_CODE` });
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -59,7 +59,7 @@ export class UserController {
   public async deleteAllUsers(req: Request, res: Response) {
     try {
       await this.userDal.deleteAllUsers();
-      return res.status(DELETED).json({ status: "All users deleted" });
+      return res.status(DELETED_CODE).json({ status: "All users deleted_CODE" });
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -67,11 +67,11 @@ export class UserController {
 
   private async getUserById(req: Request, res: Response, userId: number) {
     if (isNaN(userId)) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
     try {
       const user = await this.userDal.findById(userId);
-      return res.status(OK).json(user);
+      return res.status(OK_CODE).json(user);
     }
     catch (error: any) {
       return this.errorHandler(error, res);
@@ -81,7 +81,7 @@ export class UserController {
   private async getUserByEmail(req: Request, res: Response, email: string) {
     try {
       const user = await this.userDal.findByEmail(email);
-      return res.status(OK).json(user);
+      return res.status(OK_CODE).json(user);
     }
     catch (error: any) {
       return this.errorHandler(error, res);
@@ -91,13 +91,13 @@ export class UserController {
   public async newUser(req: Request, res: Response) {
     const { name, email } = req.body;
     if (!name || !email) {
-      return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Missing name or email" });
     }
 
     try {
       const newUser = await this.userDal.create(name, email);
-      return res.status(CREATED).json({
-        status: `User ${newUser.name} with id ${newUser.id} created`,
+      return res.status(CREATED_CODE).json({
+        status: `User ${newUser.name} with id ${newUser.id} created_CODE`,
       });
     }
     catch (error: any) {
@@ -114,12 +114,12 @@ export class UserController {
     const userId = +req.params.id;
 
     if (isNaN(userId)) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
     const { weight, height, birthDate, location, interests } = req.body;
     if (!location) {
-      return res.status(BAD_REQUEST).json({ error: "Missing location" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Missing location" });
     }
 
     try {
@@ -133,7 +133,7 @@ export class UserController {
       });
 
       return res
-        .status(OK)
+        .status(OK_CODE)
         .json({ status: `Metadata added for user with id ${userId}` });
     } catch (error: any) {
       return this.errorHandler(error, res);
@@ -143,14 +143,14 @@ export class UserController {
   public async getUserEntireDataById(req: Request, res: Response) {
     const userId = +req.params.id;
     if (isNaN(userId)) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
     try {
       const userWithMetadata = await this.userDal.findByIdWithMetadata(userId);
       if (!userWithMetadata) {
-        return res.status(NOT_FOUND).json({ error: "User not found" });
+        return res.status(NOT_FOUND_CODE).json({ error: "User not found" });
       }
-      return res.status(OK).json(userWithMetadata);
+      return res.status(OK_CODE).json(userWithMetadata);
     }
     catch (error: any) {
       return this.errorHandler(error, res);
@@ -161,12 +161,12 @@ export class UserController {
     const userId = +req.params.id;
 
     if (isNaN(userId)) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
     try {
       const metaData = await this.userDal.getData(userId);
-      return res.status(OK).json(metaData);
+      return res.status(OK_CODE).json(metaData);
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -176,14 +176,14 @@ export class UserController {
     try {
       const { email } = req.body;
       if (!email) {
-        return res.status(BAD_REQUEST).json({ error: "email is required" });
+        return res.status(BAD_REQUEST_CODE).json({ error: "email is required" });
       }
 
       const url = await getResetPasswordUrl(email);
-      return res.status(OK).json({ url: url });
+      return res.status(OK_CODE).json({ url: url });
     } catch (err) {
       console.log(err);
-      return res.status(NOT_FOUND).json({ error: err });
+      return res.status(NOT_FOUND_CODE).json({ error: err });
     }
   }
 
@@ -191,12 +191,12 @@ export class UserController {
   public async blockUser(req: Request, res: Response) {
     const userId = +req.body.userId;
     if (!userId) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
     try {
       const user = await this.userDal.blockUser(userId);
-      return res.status(OK).json({ status: "User blocked" });
+      return res.status(OK_CODE).json({ status: "User blocked" });
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -205,12 +205,12 @@ export class UserController {
   public async unblockUser(req: Request, res: Response) {
     const userId = +req.body.userId;
     if (!userId) {
-      return res.status(BAD_REQUEST).json({ error: "Invalid id" });
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
     try {
       const user = await this.userDal.unblockUser(userId);
-      return res.status(OK).json({ status: "User unblocked" });
+      return res.status(OK_CODE).json({ status: "User unblocked" });
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -225,10 +225,10 @@ export class UserController {
       }
 
       if (users && users.length === 0) {
-        return res.status(OK).json({ error: "No blocked users found" });
+        return res.status(OK_CODE).json({ error: "No blocked users found" });
       }
 
-      return res.status(OK).json(users);
+      return res.status(OK_CODE).json(users);
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
