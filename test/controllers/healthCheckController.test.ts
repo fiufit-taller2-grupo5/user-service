@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HealthCheckController } from "../../src/controllers/HealthCheckController";
-import { OK } from "../../src/constants/httpConstants";
+import { OK_CODE } from "../../src/constants/httpConstants";
 
 describe("HealthCheckController", () => {
   let req: Request;
@@ -21,7 +21,7 @@ describe("HealthCheckController", () => {
   describe("getAllUsers", () => {
     it("Should return an empty array of users", async () => {
       await unit.healthCheck(req, res);
-      expect(res.status).toHaveBeenCalledWith(OK);
+      expect(res.status).toHaveBeenCalledWith(OK_CODE);
       expect(res.json).toHaveBeenCalledWith({ status: 1 });
     });
   });
