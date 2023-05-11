@@ -3,7 +3,8 @@ import { ACTIVE_USER } from "../constants/userStateConstants";
 import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
-
+import { Error } from "../Error";
+import { NOT_FOUND, USER_IS_ADMIN, EMAIL_IN_USE } from "../constants/responseMessages";
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
@@ -19,27 +20,34 @@ export class UserDal implements IUserDal {
     });
   }
 
-  public async findById(userId: number): Promise<User | null> {
-    return await this.prismaClient.user.findFirst({
+  public async findById(userId: number): Promise<User> {
+    const user = await this.prismaClient.user.findFirst({
       where: { id: userId, role: "user" },
     });
+    if (user === null) {
+      throw new Error(NOT_FOUND);
+    }
+    return user;
   }
 
-  public async findByIdWithMetadata(userId: number): Promise<User | null> {
-    return await this.prismaClient.user.findFirst({
+  public async findByIdWithMetadata(userId: number): Promise<User> {
+    const userWithMetadata = await this.prismaClient.user.findFirst({
       where: { id: userId, role: "user" },
       include: { UserMetadata: true },
     });
+    if (userWithMetadata === null) {
+      throw new Error(NOT_FOUND);
+    }
+    return userWithMetadata;
   }
 
   public async deleteById(userId: number): Promise<User> {
-    // delete the metadata
     const user = await this.findById(userId);
     if (user === null) {
-      throw new Error("User not found");
+      throw new Error(NOT_FOUND);
     }
     if (user.role !== "user") {
-      throw new Error("User is not a user");
+      throw new Error(USER_IS_ADMIN);
     }
     return await this.prismaClient.user.delete({
       where: { id: userId },
@@ -47,28 +55,34 @@ export class UserDal implements IUserDal {
   }
 
   public async deleteAllUsers(): Promise<void> {
-    // Find all user IDs with role "user"
     const userIds = await this.prismaClient.user.findMany({
       where: { role: "user" },
       select: { id: true },
     });
 
-    // Delete all users
     for (const userId of userIds) {
       await this.deleteById(userId.id);
     }
   }
 
-  public async findByName(name: string): Promise<User | null> {
-    return await this.prismaClient.user.findFirst({
+  public async findByName(name: string): Promise<User> {
+    const user = await this.prismaClient.user.findFirst({
       where: { name: name, role: "user" },
     });
+    if (user === null) {
+      throw new Error(NOT_FOUND);
+    }
+    return user;
   }
 
-  public async findByEmail(email: string): Promise<User | null> {
-    return await this.prismaClient.user.findFirst({
+  public async findByEmail(email: string): Promise<User> {
+    const user = await this.prismaClient.user.findFirst({
       where: { email: email, role: "user" },
     });
+    if (user === null) {
+      throw new Error(NOT_FOUND);
+    }
+    return user;
   }
 
   public async create(name: string, email: string): Promise<User> {
@@ -77,7 +91,7 @@ export class UserDal implements IUserDal {
       where: { email: email },
     });
     if (user) {
-      throw new Error("Email already in use");
+      throw new Error(EMAIL_IN_USE);
     }
     return await this.prismaClient.user.create({
       data: {
@@ -96,13 +110,10 @@ export class UserDal implements IUserDal {
   }
 
   public async addData(userMetadata: UserMetadata): Promise<void> {
-    // if no user with this id exists return error 
-    const user = await this.findById(userMetadata.userId);
-    if (!user) {
-      const id = userMetadata.userId;
-      throw new Error("User with id " + id + " not found");
-    }
-    const userData = await this.getData(userMetadata.userId);
+    await this.findById(userMetadata.userId);
+    const userData = await this.prismaClient.userMetadata.findUnique({
+      where: { userId: userMetadata.userId },
+    });
     if (!userData) {
       await this.prismaClient.userMetadata.create({
         data: {
@@ -128,26 +139,21 @@ export class UserDal implements IUserDal {
     }
   }
 
-  public async getData(userId: number): Promise<UserMetadata | null> {
+  public async getData(userId: number): Promise<UserMetadata> {
     const userMetadata = await this.prismaClient.userMetadata.findUnique({
       where: { userId: userId },
     });
-
     if (!userMetadata) {
-      return null;
+      throw new Error(NOT_FOUND);
     }
-
-    return {
-      userId: userMetadata.userId,
-      weight: userMetadata.weight,
-      height: userMetadata.height,
-      birthDate: userMetadata.birthDate,
-      location: userMetadata.location,
-      interests: userMetadata.interests,
-    };
+    return userMetadata;
   }
 
   public blockUser(userId: number): Promise<User> {
+    const user = this.findById(userId);
+    if (user === null) {
+      throw new Error(NOT_FOUND);
+    }
     return this.prismaClient.user.update({
       where: { id: userId },
       data: { state: "blocked" },
@@ -155,6 +161,10 @@ export class UserDal implements IUserDal {
   }
 
   public unblockUser(userId: number): Promise<User> {
+    const user = this.findById(userId);
+    if (user === null) {
+      throw new Error(NOT_FOUND);
+    }
     return this.prismaClient.user.update({
       where: { id: userId },
       data: { state: "active" },
@@ -162,8 +172,12 @@ export class UserDal implements IUserDal {
   }
 
   public blockedUsers(): Promise<User[]> {
-    return this.prismaClient.user.findMany({
+    const users = this.prismaClient.user.findMany({
       where: { state: "blocked" },
     });
+    if (users === null) {
+      throw new Error("No blocked users found");
+    }
+    return users;
   }
 }

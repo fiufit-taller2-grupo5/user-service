@@ -10,6 +10,7 @@ import {
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
 import { getResetPasswordUrl } from "../firebase/frebaseUtils";
+import { Error } from "../Error";
 
 export class UserController {
   private userDal: IUserDal;
@@ -18,10 +19,12 @@ export class UserController {
     this.userDal = userDal;
   }
 
-  public errorHandler(e: any, res: Response) {
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json({ error: e.message, metadata: e.meta });
+  public errorHandler(error: any, res: Response) {
+    if (error instanceof Error) {
+      return res.status(error.getCode()).json({ error: error.getMessage() });
+    } else {
+      return res.status(INTERNAL_SERVER_ERROR).json({ unexpectedError: error.message });
+    }
   }
 
   public async getAllUsers(req: Request, res: Response) {
@@ -35,6 +38,9 @@ export class UserController {
     const users = await this.userDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
+    if (users.length === 0) {
+      return res.status(OK).json({ message: "No users found" });
+    }
     return res.status(OK).json(users);
   }
 
@@ -46,7 +52,7 @@ export class UserController {
         .status(DELETED)
         .json({ status: `User of id ${user.id} deleted` });
     } catch (error: any) {
-      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return this.errorHandler(error, res);
     }
   }
 
@@ -55,7 +61,7 @@ export class UserController {
       await this.userDal.deleteAllUsers();
       return res.status(DELETED).json({ status: "All users deleted" });
     } catch (error: any) {
-      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return this.errorHandler(error, res);
     }
   }
 
@@ -63,24 +69,23 @@ export class UserController {
     if (isNaN(userId)) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
-
-    const user = await this.userDal.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    try {
+      const user = await this.userDal.findById(userId);
+      return res.status(OK).json(user);
     }
-
-    return res.status(OK).json(user);
+    catch (error: any) {
+      return this.errorHandler(error, res);
+    }
   }
 
   private async getUserByEmail(req: Request, res: Response, email: string) {
-    const user = await this.userDal.findByEmail(email);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    try {
+      const user = await this.userDal.findByEmail(email);
+      return res.status(OK).json(user);
     }
-
-    return res.status(OK).json(user);
+    catch (error: any) {
+      return this.errorHandler(error, res);
+    }
   }
 
   public async newUser(req: Request, res: Response) {
@@ -89,16 +94,15 @@ export class UserController {
       return res.status(BAD_REQUEST).json({ error: "Missing name or email" });
     }
 
-    if (await this.userDal.findByEmail(email)) {
-      return res
-        .status(CONFLICT)
-        .json({ error: `User with email ${email} already exists` });
+    try {
+      const newUser = await this.userDal.create(name, email);
+      return res.status(CREATED).json({
+        status: `User ${newUser.name} with id ${newUser.id} created`,
+      });
     }
-
-    const newUser = await this.userDal.create(name, email);
-    return res.status(CREATED).json({
-      status: `User ${newUser.name} with id ${newUser.id} created`,
-    });
+    catch (error: any) {
+      return this.errorHandler(error, res);
+    }
   }
 
   public async getInterests(req: Request, res: Response) {
@@ -131,10 +135,8 @@ export class UserController {
       return res
         .status(OK)
         .json({ status: `Metadata added for user with id ${userId}` });
-    } catch (err: any) {
-      console.log("Error:");
-      console.log(err);
-      return res.status(409).json({ error: err.message });
+    } catch (error: any) {
+      return this.errorHandler(error, res);
     }
   }
 
@@ -143,13 +145,16 @@ export class UserController {
     if (isNaN(userId)) {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
-    const userWithMetadata = await this.userDal.findByIdWithMetadata(userId);
-    if (!userWithMetadata) {
-      return res.status(NOT_FOUND).json({ error: "User not found" });
+    try {
+      const userWithMetadata = await this.userDal.findByIdWithMetadata(userId);
+      if (!userWithMetadata) {
+        return res.status(NOT_FOUND).json({ error: "User not found" });
+      }
+      return res.status(OK).json(userWithMetadata);
     }
-    return res.status(OK).json(userWithMetadata);
-    // return code 2 just to see if this works 
-    // return res.status(OK).json({ code: 2 });
+    catch (error: any) {
+      return this.errorHandler(error, res);
+    }
   }
 
   public async getUserData(req: Request, res: Response) {
@@ -159,22 +164,12 @@ export class UserController {
       return res.status(BAD_REQUEST).json({ error: "Invalid id" });
     }
 
-    const userMetadata = await this.userDal.getData(userId);
-
-    if (!userMetadata) {
-      console.log("No metadata found for user with id " + userId);
-      return res
-        .status(404)
-        .json({ error: `No metadata found for user with id ${userId}` });
+    try {
+      const metaData = await this.userDal.getData(userId);
+      return res.status(OK).json(metaData);
+    } catch (error: any) {
+      return this.errorHandler(error, res);
     }
-
-    return res.status(OK).json({
-      weight: userMetadata.weight,
-      height: userMetadata.height,
-      birthDate: userMetadata.birthDate,
-      location: userMetadata.location,
-      interests: userMetadata.interests,
-    });
   }
 
   public async changePassword(req: Request, res: Response) {
@@ -192,6 +187,7 @@ export class UserController {
     }
   }
 
+
   public async blockUser(req: Request, res: Response) {
     const userId = +req.body.userId;
     if (!userId) {
@@ -200,13 +196,9 @@ export class UserController {
 
     try {
       const user = await this.userDal.blockUser(userId);
-      if (!user) {
-        return res.status(NOT_FOUND).json({ error: "User not found" });
-      } else {
-        return res.status(OK).json({ status: "User blocked" });
-      }
+      return res.status(OK).json({ status: "User blocked" });
     } catch (error: any) {
-      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return this.errorHandler(error, res);
     }
   }
 
@@ -218,13 +210,9 @@ export class UserController {
 
     try {
       const user = await this.userDal.unblockUser(userId);
-      if (!user) {
-        return res.status(NOT_FOUND).json({ error: "User not found" });
-      } else {
-        return res.status(OK).json({ status: "User unblocked" });
-      }
+      return res.status(OK).json({ status: "User unblocked" });
     } catch (error: any) {
-      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return this.errorHandler(error, res);
     }
   }
 
@@ -237,12 +225,12 @@ export class UserController {
       }
 
       if (users && users.length === 0) {
-        return res.status(NOT_FOUND).json({ error: "No blocked users found" });
+        return res.status(OK).json({ error: "No blocked users found" });
       }
 
       return res.status(OK).json(users);
     } catch (error: any) {
-      return res.status(INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return this.errorHandler(error, res);
     }
   }
 }
