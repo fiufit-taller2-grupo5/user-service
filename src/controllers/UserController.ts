@@ -220,9 +220,6 @@ export class UserController {
     try {
       const users = await this.userDal.blockedUsers();
       console.log(`Found ${users.length} blocked users`);
-      if (users == null) {
-        return res.status(500).json({ error: "Failed getting blocked users" });
-      }
 
       if (users && users.length === 0) {
         return res.status(OK_CODE).json({ error: "No blocked users found" });

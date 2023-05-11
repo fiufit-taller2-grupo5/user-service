@@ -175,9 +175,6 @@ export class UserDal implements IUserDal {
     const users = this.prismaClient.user.findMany({
       where: { state: "blocked" },
     });
-    if (users === null) {
-      throw new Error("No blocked users found");
-    }
     return users;
   }
 }
