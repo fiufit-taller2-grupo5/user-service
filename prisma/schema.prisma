@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
@@ -12,7 +15,7 @@ datasource db {
 model User {
   id           Int           @id @default(autoincrement())
   email        String        @unique
-  name         String?
+  name         String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   state        String        @default("active")
@@ -22,7 +25,6 @@ model User {
   @@schema("user-service")
 }
 
-// comentario2
 enum Interests {
   Outdoor
   Indoor
