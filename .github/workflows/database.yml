@@ -25,7 +25,7 @@ jobs:
         uses: ./.github/actions
         with:
           tag: okteto.dev/prisma-job-user:${{ github.sha }}
-          file: database/prisma/Dockerfile
+          file: database/Dockerfile
           sha: ${{ github.sha }}
           okteto_yml: okteto_database.yml
           k8s_deployment_file: database/prisma-job-user.yml
