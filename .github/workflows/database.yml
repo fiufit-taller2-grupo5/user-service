@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - "database/**"
+      - "prisma/**"
 jobs:
   prisma-job-user:
     runs-on: ubuntu-latest
