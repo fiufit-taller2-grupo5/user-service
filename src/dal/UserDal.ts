@@ -3,9 +3,9 @@ import { ACTIVE_USER } from "../constants/userStateConstants";
 import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
-import { Error } from "../Error";
 import {
   NOT_FOUND,
+  NO_METADATA_FOUND,
   USER_IS_ADMIN,
   EMAIL_IN_USE,
 } from "../constants/responseMessages";
@@ -148,7 +148,7 @@ export class UserDal implements IUserDal {
       where: { userId: userId },
     });
     if (!userMetadata) {
-      throw new Error(NOT_FOUND);
+      throw new Error(NO_METADATA_FOUND);
     }
     return userMetadata;
   }

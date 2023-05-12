@@ -1,7 +1,21 @@
 import { IError } from "./IError";
-import { NOT_FOUND, USER_NOT_ADMIN, USER_IS_ADMIN, EMAIL_IN_USE } from "./constants/responseMessages";
-import { OK_CODE, CREATED_CODE, DELETED_CODE, BAD_REQUEST_CODE, UNAUTHORIZED_CODE, INCORRECT_ROLE_CODE, NOT_FOUND_CODE, CONFLICT_CODE, INTERNAL_SERVER_ERROR_CODE } from "./constants/httpConstants";
-
+import {
+    NOT_FOUND,
+    USER_NOT_ADMIN,
+    USER_IS_ADMIN,
+    EMAIL_IN_USE,
+} from "./constants/responseMessages";
+import {
+    OK_CODE,
+    CREATED_CODE,
+    DELETED_CODE,
+    BAD_REQUEST_CODE,
+    UNAUTHORIZED_CODE,
+    INCORRECT_ROLE_CODE,
+    NOT_FOUND_CODE,
+    CONFLICT_CODE,
+    INTERNAL_SERVER_ERROR_CODE,
+} from "./constants/httpConstants";
 
 export class Error implements IError {
     private message: string;
@@ -35,4 +49,3 @@ export class Error implements IError {
         }
     }
 }
-

@@ -49,7 +49,7 @@ export class UserRouter {
      *               - "Intense"
      *               - "Relaxing"
      */
-    this.router.get("/interests", this.bind(this.userController.getInterests));
+    this.router.get("/interests", this.routeHandler(this.userController.getInterests));
     /**
      * @openapi
      * '/api/users':
@@ -66,9 +66,9 @@ export class UserRouter {
      *               $ref: '#/components/schemas/UserList'
      *
      */
-    this.router.get("/", this.bind(this.userController.getAllUsers));
+    this.router.get("/", this.routeHandler(this.userController.getAllUsers));
 
-    this.router.delete("/", this.bind(this.userController.deleteAllUsers));
+    this.router.delete("/", this.routeHandler(this.userController.deleteAllUsers));
 
     /**
      * @openapi
@@ -93,11 +93,11 @@ export class UserRouter {
      *       '500':
      *         description: Internal Server Error
      */
-    this.router.delete("/:id", this.bind(this.userController.deleteUser));
+    this.router.delete("/:id", this.routeHandler(this.userController.deleteUser));
 
     this.router.get(
       "/:id",
-      this.bind(this.userController.getUserEntireDataById)
+      this.routeHandler(this.userController.getUserEntireDataById)
     );
 
     /**
@@ -129,7 +129,7 @@ export class UserRouter {
      */
     this.router.get(
       "/:id/metadata",
-      this.bind(this.userController.getUserData)
+      this.routeHandler(this.userController.getUserData)
     );
 
     /**
@@ -164,7 +164,7 @@ export class UserRouter {
      */
     this.router.put(
       "/:id/metadata",
-      this.bind(this.userController.addUserData)
+      this.routeHandler(this.userController.addUserData)
     );
 
     /**
@@ -188,11 +188,11 @@ export class UserRouter {
      *       409:
      *         description: User already exists
      */
-    this.router.post("/", this.bind(this.userController.newUser));
+    this.router.post("/", this.routeHandler(this.userController.newUser));
 
     this.router.post(
       "/changepassword",
-      this.bind(this.userController.changePassword)
+      this.routeHandler(this.userController.changePassword)
     );
 
     this.router.post(
@@ -200,9 +200,9 @@ export class UserRouter {
       this.routeHandler(this.userController.blockUser)
     );
 
-    this.router.post("/unblock", this.bind(this.userController.unblockUser));
+    this.router.post("/unblock", this.routeHandler(this.userController.unblockUser));
 
-    this.router.get("/blocked", this.bind(this.userController.getBlockedUsers));
+    this.router.get("/blocked", this.routeHandler(this.userController.getBlockedUsers));
   }
 
   private routeHandler(method: Function) {
