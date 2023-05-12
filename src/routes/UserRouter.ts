@@ -1,5 +1,12 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { UserController } from "../controllers/UserController";
+
+type MiddlewareFn = (req: Request, res: Response) => Promise<any>;
+
+const asyncErrorHandler =
+  (fn: MiddlewareFn) => (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res)).catch(next);
+  };
 
 export class UserRouter {
   private router: Router;
@@ -125,8 +132,6 @@ export class UserRouter {
       this.bind(this.userController.getUserData)
     );
 
-
-
     /**
      * @openapi
      * /api/users/{userId}/metadata:
@@ -190,7 +195,12 @@ export class UserRouter {
       this.bind(this.userController.changePassword)
     );
 
-    this.router.post("/block", this.bind(this.userController.blockUser));
+    this.router.post(
+      "/block",
+      asyncErrorHandler(async (req, res) => {
+        await this.bind(this.userController.blockUser)(req, res);
+      })
+    );
 
     this.router.post("/unblock", this.bind(this.userController.unblockUser));
 

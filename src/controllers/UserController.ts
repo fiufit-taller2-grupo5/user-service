@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   BAD_REQUEST_CODE,
   CONFLICT_CODE,
@@ -23,7 +23,9 @@ export class UserController {
     if (error instanceof Error) {
       return res.status(error.getCode()).json({ error: error.getMessage() });
     } else {
-      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ unexpectedError: error.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .json({ unexpectedError: error.message });
     }
   }
 
@@ -59,7 +61,9 @@ export class UserController {
   public async deleteAllUsers(req: Request, res: Response) {
     try {
       await this.userDal.deleteAllUsers();
-      return res.status(DELETED_CODE).json({ status: "All users deleted_CODE" });
+      return res
+        .status(DELETED_CODE)
+        .json({ status: "All users deleted_CODE" });
     } catch (error: any) {
       return this.errorHandler(error, res);
     }
@@ -72,8 +76,7 @@ export class UserController {
     try {
       const user = await this.userDal.findById(userId);
       return res.status(OK_CODE).json(user);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       return this.errorHandler(error, res);
     }
   }
@@ -82,8 +85,7 @@ export class UserController {
     try {
       const user = await this.userDal.findByEmail(email);
       return res.status(OK_CODE).json(user);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       return this.errorHandler(error, res);
     }
   }
@@ -91,7 +93,9 @@ export class UserController {
   public async newUser(req: Request, res: Response) {
     const { name, email } = req.body;
     if (!name || !email) {
-      return res.status(BAD_REQUEST_CODE).json({ error: "Missing name or email" });
+      return res
+        .status(BAD_REQUEST_CODE)
+        .json({ error: "Missing name or email" });
     }
 
     try {
@@ -99,8 +103,7 @@ export class UserController {
       return res.status(CREATED_CODE).json({
         status: `User ${newUser.name} with id ${newUser.id} created_CODE`,
       });
-    }
-    catch (error: any) {
+    } catch (error: any) {
       return this.errorHandler(error, res);
     }
   }
@@ -151,8 +154,7 @@ export class UserController {
         return res.status(NOT_FOUND_CODE).json({ error: "User not found" });
       }
       return res.status(OK_CODE).json(userWithMetadata);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       return this.errorHandler(error, res);
     }
   }
@@ -176,7 +178,9 @@ export class UserController {
     try {
       const { email } = req.body;
       if (!email) {
-        return res.status(BAD_REQUEST_CODE).json({ error: "email is required" });
+        return res
+          .status(BAD_REQUEST_CODE)
+          .json({ error: "email is required" });
       }
 
       const url = await getResetPasswordUrl(email);
@@ -187,19 +191,9 @@ export class UserController {
     }
   }
 
-
   public async blockUser(req: Request, res: Response) {
-    const userId = +req.body.userId;
-    if (!userId) {
-      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
-    }
-
-    try {
-      const user = await this.userDal.blockUser(userId);
-      return res.status(OK_CODE).json({ status: "User blocked" });
-    } catch (error: any) {
-      return this.errorHandler(error, res);
-    }
+    await this.userDal.blockUser(req.body.userId);
+    return res.status(OK_CODE).json({ status: "User blocked" });
   }
 
   public async unblockUser(req: Request, res: Response) {

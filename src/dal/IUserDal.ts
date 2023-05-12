@@ -12,7 +12,7 @@ export interface IUserDal {
   getData(userId: number): Promise<UserMetadata | null>;
   getInterests(): Promise<string[]>;
   deleteAllUsers(): Promise<void>;
-  blockUser(userId: number): Promise<User | null>;
+  blockUser(userId: number): Promise<void>;
   unblockUser(userId: number): Promise<User | null>;
   blockedUsers(): Promise<User[]>;
 }

@@ -4,7 +4,11 @@ import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
 import { Error } from "../Error";
-import { NOT_FOUND, USER_IS_ADMIN, EMAIL_IN_USE } from "../constants/responseMessages";
+import {
+  NOT_FOUND,
+  USER_IS_ADMIN,
+  EMAIL_IN_USE,
+} from "../constants/responseMessages";
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
@@ -149,12 +153,8 @@ export class UserDal implements IUserDal {
     return userMetadata;
   }
 
-  public blockUser(userId: number): Promise<User> {
-    const user = this.findById(userId);
-    if (user === null) {
-      throw new Error(NOT_FOUND);
-    }
-    return this.prismaClient.user.update({
+  public async blockUser(userId: number): Promise<void> {
+    await this.prismaClient.user.update({
       where: { id: userId },
       data: { state: "blocked" },
     });
