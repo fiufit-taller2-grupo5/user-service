@@ -197,9 +197,7 @@ export class UserRouter {
 
     this.router.post(
       "/block",
-      asyncErrorHandler(async (req, res) => {
-        await this.bind(this.userController.blockUser)(req, res);
-      })
+      this.routeHandler(this.userController.blockUser)
     );
 
     this.router.post("/unblock", this.bind(this.userController.unblockUser));
@@ -207,6 +205,11 @@ export class UserRouter {
     this.router.get("/blocked", this.bind(this.userController.getBlockedUsers));
   }
 
+  private routeHandler(method: Function) {
+    return asyncErrorHandler(async (req, res) => {
+      await this.bind(method)(req, res);
+    });
+  }
   private bind(method: Function) {
     return method.bind(this.userController);
   }
