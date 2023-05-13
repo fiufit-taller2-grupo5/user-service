@@ -225,7 +225,6 @@ export class UserRouter {
     );
 
     this.router.post("/unblock",
-      this.checkBlockedUser,
       this.routeHandler(this.userController.unblockUser));
 
     this.router.get("/blocked", this.routeHandler(this.userController.getBlockedUsers));
