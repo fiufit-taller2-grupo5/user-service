@@ -8,6 +8,8 @@ const asyncErrorHandler =
     Promise.resolve(fn(req, res)).catch(next);
   };
 
+
+
 export class UserRouter {
   private router: Router;
   private userController: UserController;
@@ -21,6 +23,34 @@ export class UserRouter {
   public getRouter(): Router {
     return this.router;
   }
+
+  public checkBlockedUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let isBlocked = false;
+      if (req.method === "GET") {
+        const userId = req.params.id;
+        if (isNaN(userId as any)) {
+          return res.status(403).json({ error: "Invalid id" });
+        }
+        isBlocked = await this.userController.isBlocked(Number.parseInt(userId, 10));
+      }
+
+      if (req.method === "POST" || req.method === "PUT") {
+        const userId = req.body.userId;
+        if (isNaN(userId)) {
+          return res.status(403).json({ error: "Invalid id" });
+        }
+        isBlocked = await this.userController.isBlocked(userId);
+      }
+
+      if (isBlocked) {
+        return res.status(403).json({ error: "User is blocked" });
+      }
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
 
   private initRoutes() {
     /**
@@ -97,6 +127,7 @@ export class UserRouter {
 
     this.router.get(
       "/:id",
+      this.checkBlockedUser,
       this.routeHandler(this.userController.getUserEntireDataById)
     );
 
@@ -129,6 +160,7 @@ export class UserRouter {
      */
     this.router.get(
       "/:id/metadata",
+      this.checkBlockedUser,
       this.routeHandler(this.userController.getUserData)
     );
 
@@ -164,6 +196,7 @@ export class UserRouter {
      */
     this.router.put(
       "/:id/metadata",
+      this.checkBlockedUser,
       this.routeHandler(this.userController.addUserData)
     );
 
@@ -192,15 +225,19 @@ export class UserRouter {
 
     this.router.post(
       "/changepassword",
+      this.checkBlockedUser,
       this.routeHandler(this.userController.changePassword)
     );
 
     this.router.post(
       "/block",
+      this.checkBlockedUser,
       this.routeHandler(this.userController.blockUser)
     );
 
-    this.router.post("/unblock", this.routeHandler(this.userController.unblockUser));
+    this.router.post("/unblock",
+      this.checkBlockedUser,
+      this.routeHandler(this.userController.unblockUser));
 
     this.router.get("/blocked", this.routeHandler(this.userController.getBlockedUsers));
   }

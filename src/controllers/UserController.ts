@@ -110,6 +110,12 @@ export class UserController {
 
   }
 
+  public async isBlocked(userId: any) {
+    const user = await this.userDal.findById(userId);
+    const isBlocked = user?.state !== "ACTIVE" ?? false;
+    return isBlocked
+  }
+
   public async getUserEntireDataById(req: Request, res: Response) {
     const userId = +req.params.id;
     if (isNaN(userId)) {
