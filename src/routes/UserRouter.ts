@@ -1,14 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { UserController } from "../controllers/UserController";
-
 type MiddlewareFn = (req: Request, res: Response) => Promise<any>;
 
 const asyncErrorHandler =
   (fn: MiddlewareFn) => (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res)).catch(next);
   };
-
-
 
 export class UserRouter {
   private router: Router;
@@ -27,21 +24,13 @@ export class UserRouter {
   public checkBlockedUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let isBlocked = false;
-      if (req.method === "GET") {
-        const userId = req.params.id;
-        if (isNaN(userId as any)) {
-          return res.status(403).json({ error: "Invalid id" });
-        }
-        isBlocked = await this.userController.isBlocked(Number.parseInt(userId, 10));
+      let userId = req.params.id || req.body.userId;
+
+      if (isNaN(userId as any)) {
+        return res.status(404).json({ error: `Invalid id: ${userId}` });
       }
 
-      if (req.method === "POST" || req.method === "PUT") {
-        const userId = req.body.userId;
-        if (isNaN(userId)) {
-          return res.status(403).json({ error: "Invalid id" });
-        }
-        isBlocked = await this.userController.isBlocked(userId);
-      }
+      isBlocked = await this.userController.isBlocked(Number.parseInt(userId, 10));
 
       if (isBlocked) {
         return res.status(403).json({ error: "User is blocked" });

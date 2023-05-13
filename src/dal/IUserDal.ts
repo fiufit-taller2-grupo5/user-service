@@ -5,7 +5,7 @@ export interface IUserDal {
     skipBlocked: boolean
   }): Promise<User[]>;
   findById(userId: number): Promise<User | null>;
-  findByIdWithMetadata(userId: number): Promise<User | null>;
+  findByIdWithMetadata(userId: number): Promise<User & UserMetadata>;
   findByName(name: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
   deleteById(userId: number): Promise<User>;

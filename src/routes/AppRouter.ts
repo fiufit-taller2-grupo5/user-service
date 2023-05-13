@@ -1,8 +1,7 @@
-import { Express } from "express";
+import { Express, NextFunction } from "express";
 import { UserRouter } from "./UserRouter";
 import { HealthCheckRouter } from "./HealthCheckRouter";
 import { AdminRouter } from "./AdminsRouter";
-
 export class AppRouter {
   private healthCheckRouter: HealthCheckRouter;
   private userRouter: UserRouter;

@@ -2,12 +2,9 @@ import { Request, Response } from "express";
 import {
   BAD_REQUEST_CODE,
   CREATED_CODE,
-  INTERNAL_SERVER_ERROR_CODE,
   OK_CODE,
-  CONFLICT_CODE,
 } from "../constants/httpConstants";
 import { IAdminDal } from "../dal/IAdminDal";
-import { Error } from "../Error";
 
 export class AdminController {
   private adminDal: IAdminDal;
@@ -16,13 +13,7 @@ export class AdminController {
     this.adminDal = adminDal;
   }
 
-  public errorHandler(error: any, res: Response) {
-    if (error instanceof Error) {
-      return res.status(error.getCode()).json({ error: error.getMessage() });
-    } else {
-      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ unexpectedError: error.message });
-    }
-  }
+
 
   public async getAllAdmins(_req: Request, res: Response) {
     const admins = await this.adminDal.findAll();
@@ -36,35 +27,27 @@ export class AdminController {
 
   public async deleteAdmin(req: Request, res: Response) {
     const adminId: number = +req.params.id;
-    try {
-      const admin = await this.adminDal.deleteById(adminId);
-      console.log(`Deleting admin of id ${admin.id}`);
-      return res.status(OK_CODE).json({ status: "Admin deleted" });
-    } catch (error: any) {
-      return this.errorHandler(error, res);
-    }
+
+    const admin = await this.adminDal.deleteById(adminId);
+    console.log(`Deleting admin of id ${admin.id}`);
+    return res.status(OK_CODE).json({ status: "Admin deleted" });
+
   }
 
 
   public async findByName(req: Request, res: Response) {
     const name: string = req.params.name;
-    try {
-      const admin = await this.adminDal.findByName(name);
-      return res.status(OK_CODE).json(admin);
-    } catch (error: any) {
-      return this.errorHandler(error, res);
-    }
+
+    const admin = await this.adminDal.findByName(name);
+    return res.status(OK_CODE).json(admin);
+
   }
 
   public async findAdminByEmail(req: Request, res: Response) {
     const email: string = req.params.email;
-    try {
-      const admin = await this.adminDal.findByEmail(email);
-      return res.status(OK_CODE).json(admin);
-    }
-    catch (error: any) {
-      return this.errorHandler(error, res);
-    }
+
+    const admin = await this.adminDal.findByEmail(email);
+    return res.status(OK_CODE).json(admin);
   }
 
 
@@ -75,13 +58,9 @@ export class AdminController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
-    try {
-      const admin = await this.adminDal.findById(adminId);
-      return res.status(OK_CODE).json(admin);
-    }
-    catch (error: any) {
-      return this.errorHandler(error, res);
-    }
+
+    const admin = await this.adminDal.findById(adminId);
+    return res.status(OK_CODE).json(admin);
   }
 
   public async newAdmin(req: Request, res: Response) {
@@ -91,17 +70,7 @@ export class AdminController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Missing name or email" });
     }
 
-    try {
-      const admin = await this.adminDal.create(name, email);
-      return res.status(CREATED_CODE).json({
-        status: `Admin created_CODE`,
-      });
-
-    }
-    catch (error: any) {
-      return this.errorHandler(error, res);
-    }
+    const admin = await this.adminDal.create(name, email);
+    return res.status(CREATED_CODE).json(admin);
   }
-
-
 }

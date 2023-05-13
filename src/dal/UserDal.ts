@@ -9,6 +9,7 @@ import {
   USER_IS_ADMIN,
   EMAIL_IN_USE,
 } from "../constants/responseMessages";
+import { ConflictError, NotFoundError } from "../Error";
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
@@ -30,30 +31,34 @@ export class UserDal implements IUserDal {
       where: { id: userId, role: REGULAR_USER },
     });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`user with id ${userId} not found`);
     }
     return user;
   }
 
-  public async findByIdWithMetadata(userId: number): Promise<User> {
+  public async findByIdWithMetadata(userId: number): Promise<User & UserMetadata> {
     const userWithMetadata = await this.prismaClient.user.findFirst({
       where: { id: userId, role: REGULAR_USER },
       include: { UserMetadata: true },
     });
     if (userWithMetadata === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`user with id ${userId} not found`);
     }
-    return userWithMetadata;
+
+    const flattenedUser: any = {
+      ...userWithMetadata,
+      ...userWithMetadata.UserMetadata
+    };
+
+    // Remove the original UserMetadata object from the flattened user
+    delete flattenedUser.UserMetadata;
+    delete flattenedUser.userId;
+
+    return flattenedUser;
   }
 
   public async deleteById(userId: number): Promise<User> {
-    const user = await this.findById(userId);
-    if (user === null) {
-      throw new Error(NOT_FOUND);
-    }
-    if (user.role !== REGULAR_USER) {
-      throw new Error(USER_IS_ADMIN);
-    }
+    await this.findById(userId);
     return await this.prismaClient.user.delete({
       where: { id: userId },
     });
@@ -75,7 +80,7 @@ export class UserDal implements IUserDal {
       where: { name: name, role: REGULAR_USER },
     });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`user with name${name} not found`);
     }
     return user;
   }
@@ -85,7 +90,7 @@ export class UserDal implements IUserDal {
       where: { email: email, role: REGULAR_USER },
     });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`user with email ${email} not found`);
     }
     return user;
   }
@@ -96,7 +101,7 @@ export class UserDal implements IUserDal {
       where: { email: email },
     });
     if (user) {
-      throw new Error(EMAIL_IN_USE);
+      throw new ConflictError(`user with email ${email} already exists`);
     }
     return await this.prismaClient.user.create({
       data: {
@@ -144,28 +149,27 @@ export class UserDal implements IUserDal {
     }
   }
 
-  public async getData(userId: number): Promise<UserMetadata> {
-    const userMetadata = await this.prismaClient.userMetadata.findUnique({
-      where: { userId: userId },
-    });
-    if (!userMetadata) {
-      throw new Error(NO_METADATA_FOUND);
-    }
-    return userMetadata;
-  }
-
   public async blockUser(userId: number): Promise<void> {
+    await this.findById(userId);
     await this.prismaClient.user.update({
       where: { id: userId },
       data: { state: "blocked" },
     });
   }
 
-  public unblockUser(userId: number): Promise<User> {
-    const user = this.findById(userId);
-    if (user === null) {
-      throw new Error(NOT_FOUND);
+  public async getData(userId: number): Promise<UserMetadata> {
+    this.findById(userId);
+    const userMetadata = await this.prismaClient.userMetadata.findUnique({
+      where: { userId: userId },
+    });
+    if (!userMetadata) {
+      throw new NotFoundError(NO_METADATA_FOUND);
     }
+    return userMetadata;
+  }
+
+  public unblockUser(userId: number): Promise<User> {
+    this.findById(userId);
     return this.prismaClient.user.update({
       where: { id: userId },
       data: { state: ACTIVE_USER },

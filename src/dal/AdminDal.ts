@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { ACTIVE_USER, ADMIN_USER } from "../constants/userStateConstants";
 import { Admin, IAdminDal } from "./IAdminDal";
-import { Error } from "../Error";
-import { NOT_FOUND, USER_NOT_ADMIN, EMAIL_IN_USE } from "../constants/responseMessages";
+import { EMAIL_IN_USE } from "../constants/responseMessages";
+import { NotFoundError } from "../Error";
 
 export class AdminDal implements IAdminDal {
   private prismaClient: PrismaClient;
@@ -22,7 +22,7 @@ export class AdminDal implements IAdminDal {
       where: { id: userId, role: ADMIN_USER },
     });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`admin with id ${userId} not found`);
     }
     return user as Admin;
   }
@@ -32,7 +32,7 @@ export class AdminDal implements IAdminDal {
       where: { name: name, role: ADMIN_USER },
     });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`admin with name ${name} not found`);
     }
     return user as Admin;
   }
@@ -42,19 +42,19 @@ export class AdminDal implements IAdminDal {
       where: { email: email, role: ADMIN_USER },
     });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`admin with email ${email} not found`);
     }
     return user as Admin;
   }
 
   public async deleteById(userId: number): Promise<Admin> {
-    const user = await this.findById(userId);
+    const user = this.prismaClient.user.findFirst({
+      where: { id: userId, role: ADMIN_USER },
+    });
     if (user === null) {
-      throw new Error(NOT_FOUND);
+      throw new NotFoundError(`admin with id ${userId} not found`);
     }
-    if (user.role !== ADMIN_USER) {
-      throw new Error(USER_NOT_ADMIN);
-    }
+
     return (await this.prismaClient.user.delete({
       where: { id: userId },
     })) as Admin;

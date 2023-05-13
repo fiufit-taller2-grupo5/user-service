@@ -1,5 +1,12 @@
-import { Router } from "express";
+import { NextFunction, Router, Request, Response } from "express";
 import { AdminController } from "../controllers/AdminController";
+
+export type MiddlewareFn = (req: Request, res: Response) => Promise<any>;
+
+const asyncErrorHandler =
+  (fn: MiddlewareFn) => (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res)).catch(next);
+  };
 
 export class AdminRouter {
   private router: Router;
@@ -32,7 +39,7 @@ export class AdminRouter {
      *               $ref: '#/components/schemas/Admin'
      *
      */
-    this.router.get("/", this.bind(this.AdminController.getAllAdmins));
+    this.router.get("/", this.routeHandler(this.AdminController.getAllAdmins));
 
     /**
      * @openapi
@@ -61,7 +68,7 @@ export class AdminRouter {
      *       '500':
      *         description: Internal Server Error
      */
-    this.router.get("/:id", this.bind(this.AdminController.getAdminById));
+    this.router.get("/:id", this.routeHandler(this.AdminController.getAdminById));
 
     /**
      * @openapi
@@ -86,7 +93,7 @@ export class AdminRouter {
      *       '500':
      *         description: Internal Server Error
      */
-    this.router.delete("/:id", this.bind(this.AdminController.deleteAdmin));
+    this.router.delete("/:id", this.routeHandler(this.AdminController.deleteAdmin));
 
 
     /**
@@ -110,7 +117,13 @@ export class AdminRouter {
      *       409:
      *         description: Admin already exists
      */
-    this.router.post("/", this.bind(this.AdminController.newAdmin));
+    this.router.post("/", this.routeHandler(this.AdminController.newAdmin));
+  }
+
+  private routeHandler(method: Function) {
+    return asyncErrorHandler(async (req, res) => {
+      await this.bind(method)(req, res);
+    });
   }
 
   private bind(method: Function) {

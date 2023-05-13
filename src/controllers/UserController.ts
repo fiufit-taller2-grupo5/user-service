@@ -10,7 +10,6 @@ import {
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
 import { getResetPasswordUrl } from "../firebase/frebaseUtils";
-import { Error } from "../Error";
 import { ACTIVE_USER } from "../constants/userStateConstants";
 
 export class UserController {
@@ -127,7 +126,7 @@ export class UserController {
 
     const userWithMetadata = await this.userDal.findByIdWithMetadata(userId);
     if (!userWithMetadata) {
-      return res.status(NOT_FOUND_CODE).json({ error: "User not found" });
+      return res.status(NOT_FOUND_CODE).json({ error: "User not found!" });
     }
     return res.status(OK_CODE).json(userWithMetadata);
 

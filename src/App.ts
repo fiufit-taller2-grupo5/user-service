@@ -152,18 +152,18 @@ export class App {
     this.initRoutes();
     this.app.use(
       (
-        err: { message: string; statusCode?: number; status?: string },
+        err: { message: string; code?: number; meta?: any },
         req: Request,
         res: Response,
-        next: NextFunction // esencial que tenga este parametro y no lo use
+        next: NextFunction // esencial que tenga este parametro y no lo use -NO BORRAR
       ) => {
-        err.statusCode = err.statusCode || 500;
-        err.status = err.status || "error";
-        console.log("errorcito", err);
-        return res.status(err.statusCode).json({
-          status: err.status,
+        const error: any = err;
+        error.code = err.code || 500;
+        error.status = "error";
+        return res.status(error.code).json({
+          status: error.status,
           message: (err as any).meta
-            ? convertPrismaErrorToUserFriendly(err as PrismaError)
+            ? convertPrismaErrorToUserFriendly(error as PrismaError)
             : err.message,
           fields: (err as any).meta ?? undefined,
           fullMessage: err.message,

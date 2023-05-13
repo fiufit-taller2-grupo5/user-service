@@ -1,51 +1,65 @@
-import { IError } from "./IError";
-import {
-    NOT_FOUND,
-    USER_NOT_ADMIN,
-    USER_IS_ADMIN,
-    EMAIL_IN_USE,
-} from "./constants/responseMessages";
-import {
-    OK_CODE,
-    CREATED_CODE,
-    DELETED_CODE,
-    BAD_REQUEST_CODE,
-    UNAUTHORIZED_CODE,
-    INCORRECT_ROLE_CODE,
-    NOT_FOUND_CODE,
-    CONFLICT_CODE,
-    INTERNAL_SERVER_ERROR_CODE,
-} from "./constants/httpConstants";
-
-export class Error implements IError {
-    private message: string;
-    private code: number;
+export class BadRequestError extends Error {
+    public message: string;
+    public code: number;
 
     constructor(message: string) {
+        super(message);
         this.message = message;
-        this.code = this.getCodeFromMessage(message);
+        this.code = 400;
     }
+}
 
-    public getMessage(): string {
-        return this.message;
+export class UnauthorizedError extends Error {
+    public message: string;
+    public code: number;
+
+    constructor(message: string) {
+        super(message);
+        this.message = message;
+        this.code = 401;
     }
+}
 
-    public getCode(): number {
-        return this.code;
+export class ForbiddenError extends Error {
+    public message: string;
+    public code: number;
+
+    constructor(message: string) {
+        super(message);
+        this.message = message;
+        this.code = 403;
     }
+}
 
-    private getCodeFromMessage(message: string): number {
-        switch (message) {
-            case NOT_FOUND:
-                return NOT_FOUND_CODE;
-            case USER_NOT_ADMIN:
-                return INCORRECT_ROLE_CODE;
-            case USER_IS_ADMIN:
-                return INCORRECT_ROLE_CODE;
-            case EMAIL_IN_USE:
-                return CONFLICT_CODE;
-            default:
-                return INTERNAL_SERVER_ERROR_CODE;
-        }
+export class NotFoundError extends Error {
+    public message: string;
+    public code: number;
+
+    constructor(message: string) {
+        super(message);
+        this.message = message;
+        this.code = 404;
+    }
+}
+
+export class ConflictError extends Error {
+    public message: string;
+    public code: number;
+
+    constructor(message: string) {
+        super(message);
+        this.message = message;
+        this.code = 409;
+    }
+}
+
+export class InternalServerError extends Error {
+    public message: string;
+    public code: number;
+
+    constructor(message: string) {
+        super(message);
+        this.message = message;
+        this.code = 500;
     }
 }
