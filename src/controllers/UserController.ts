@@ -11,6 +11,7 @@ import {
 import { IUserDal } from "../dal/IUserDal";
 import { getResetPasswordUrl } from "../firebase/frebaseUtils";
 import { Error } from "../Error";
+import { ACTIVE_USER } from "../constants/userStateConstants";
 
 export class UserController {
   private userDal: IUserDal;
@@ -28,7 +29,9 @@ export class UserController {
       return await this.getUserByEmail(req, res, req.query.email as string);
     }
 
-    const users = await this.userDal.findAll();
+    const users = await this.userDal.findAll({
+      skipBlocked: req.query.skipBlocked === "true",
+    });
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
     return res.status(OK_CODE).json(users);
@@ -112,7 +115,7 @@ export class UserController {
 
   public async isBlocked(userId: any) {
     const user = await this.userDal.findById(userId);
-    const isBlocked = user?.state !== "ACTIVE" ?? false;
+    const isBlocked = user?.state !== ACTIVE_USER ?? false;
     return isBlocked
   }
 

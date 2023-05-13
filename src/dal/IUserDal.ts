@@ -1,7 +1,9 @@
 import { User, UserMetadata } from "@prisma/client";
 
 export interface IUserDal {
-  findAll(): Promise<User[]>;
+  findAll(opts: {
+    skipBlocked: boolean
+  }): Promise<User[]>;
   findById(userId: number): Promise<User | null>;
   findByIdWithMetadata(userId: number): Promise<User | null>;
   findByName(name: string): Promise<User | null>;

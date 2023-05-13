@@ -9,14 +9,28 @@ datasource db {
   schemas  = ["user-service"]
 }
 
+enum UserState {
+  active
+  blocked
+
+  @@schema("user-service")
+}
+
+enum Role {
+  user
+  admin
+
+  @@schema("user-service")
+}
+
 model User {
   id           Int           @id @default(autoincrement())
   email        String        @unique
   name         String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  state        String        @default("active")
-  role         String        @default("user")
+  state        UserState     @default(active)
+  role         Role          @default(user)
   UserMetadata UserMetadata?
 
   @@schema("user-service")

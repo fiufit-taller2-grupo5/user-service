@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { ADMIN_USER } from "../constants/userStateConstants";
 
 export const requireAdmin = (
   req: Request,
@@ -12,7 +13,7 @@ export const requireAdmin = (
       .json({ message: "Unauthorized, user not found in body" });
   }
 
-  if (user.role !== "admin") {
+  if (user.role !== ADMIN_USER) {
     return res.status(403).json({ message: "Forbidden, requires admin role" });
   }
 

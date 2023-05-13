@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { ACTIVE_USER } from "../constants/userStateConstants";
+import { ACTIVE_USER, ADMIN_USER } from "../constants/userStateConstants";
 import { Admin, IAdminDal } from "./IAdminDal";
 import { Error } from "../Error";
 import { NOT_FOUND, USER_NOT_ADMIN, EMAIL_IN_USE } from "../constants/responseMessages";
@@ -13,13 +13,13 @@ export class AdminDal implements IAdminDal {
 
   public async findAll(): Promise<Admin[]> {
     return (await this.prismaClient.user.findMany({
-      where: { role: "admin" },
+      where: { role: ADMIN_USER },
     })) as Admin[];
   }
 
   public async findById(userId: number): Promise<Admin> {
     const user = await this.prismaClient.user.findFirst({
-      where: { id: userId, role: "admin" },
+      where: { id: userId, role: ADMIN_USER },
     });
     if (user === null) {
       throw new Error(NOT_FOUND);
@@ -29,7 +29,7 @@ export class AdminDal implements IAdminDal {
 
   public async findByName(name: string): Promise<Admin> {
     const user = await this.prismaClient.user.findFirst({
-      where: { name: name, role: "admin" },
+      where: { name: name, role: ADMIN_USER },
     });
     if (user === null) {
       throw new Error(NOT_FOUND);
@@ -39,7 +39,7 @@ export class AdminDal implements IAdminDal {
 
   public async findByEmail(email: string): Promise<Admin> {
     const user = await this.prismaClient.user.findFirst({
-      where: { email: email, role: "admin" },
+      where: { email: email, role: ADMIN_USER },
     });
     if (user === null) {
       throw new Error(NOT_FOUND);
@@ -52,7 +52,7 @@ export class AdminDal implements IAdminDal {
     if (user === null) {
       throw new Error(NOT_FOUND);
     }
-    if (user.role !== "admin") {
+    if (user.role !== ADMIN_USER) {
       throw new Error(USER_NOT_ADMIN);
     }
     return (await this.prismaClient.user.delete({
@@ -75,7 +75,7 @@ export class AdminDal implements IAdminDal {
         createdAt: new Date(),
         updatedAt: new Date(),
         state: ACTIVE_USER,
-        role: "admin",
+        role: ADMIN_USER,
       },
     })) as Admin;
   }

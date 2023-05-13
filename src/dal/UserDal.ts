@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client";
-import { ACTIVE_USER } from "../constants/userStateConstants";
+import { ACTIVE_USER, BLOCKED_USER, REGULAR_USER } from "../constants/userStateConstants";
 import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
@@ -16,17 +16,18 @@ export class UserDal implements IUserDal {
     this.prismaClient = prismaClient;
   }
 
-  public async findAll(): Promise<User[]> {
+  public async findAll({ skipBlocked }: { skipBlocked: boolean }): Promise<User[]> {
     return await this.prismaClient.user.findMany({
       where: {
-        role: "user",
+        role: REGULAR_USER,
+        state: skipBlocked ? { not: BLOCKED_USER } : undefined,
       },
     });
   }
 
   public async findById(userId: number): Promise<User> {
     const user = await this.prismaClient.user.findFirst({
-      where: { id: userId, role: "user" },
+      where: { id: userId, role: REGULAR_USER },
     });
     if (user === null) {
       throw new Error(NOT_FOUND);
@@ -36,7 +37,7 @@ export class UserDal implements IUserDal {
 
   public async findByIdWithMetadata(userId: number): Promise<User> {
     const userWithMetadata = await this.prismaClient.user.findFirst({
-      where: { id: userId, role: "user" },
+      where: { id: userId, role: REGULAR_USER },
       include: { UserMetadata: true },
     });
     if (userWithMetadata === null) {
@@ -50,7 +51,7 @@ export class UserDal implements IUserDal {
     if (user === null) {
       throw new Error(NOT_FOUND);
     }
-    if (user.role !== "user") {
+    if (user.role !== REGULAR_USER) {
       throw new Error(USER_IS_ADMIN);
     }
     return await this.prismaClient.user.delete({
@@ -60,7 +61,7 @@ export class UserDal implements IUserDal {
 
   public async deleteAllUsers(): Promise<void> {
     const userIds = await this.prismaClient.user.findMany({
-      where: { role: "user" },
+      where: { role: REGULAR_USER },
       select: { id: true },
     });
 
@@ -71,7 +72,7 @@ export class UserDal implements IUserDal {
 
   public async findByName(name: string): Promise<User> {
     const user = await this.prismaClient.user.findFirst({
-      where: { name: name, role: "user" },
+      where: { name: name, role: REGULAR_USER },
     });
     if (user === null) {
       throw new Error(NOT_FOUND);
@@ -81,7 +82,7 @@ export class UserDal implements IUserDal {
 
   public async findByEmail(email: string): Promise<User> {
     const user = await this.prismaClient.user.findFirst({
-      where: { email: email, role: "user" },
+      where: { email: email, role: REGULAR_USER },
     });
     if (user === null) {
       throw new Error(NOT_FOUND);
@@ -104,7 +105,7 @@ export class UserDal implements IUserDal {
         createdAt: new Date(),
         updatedAt: new Date(),
         state: ACTIVE_USER,
-        role: "user",
+        role: REGULAR_USER,
       },
     });
   }
@@ -167,13 +168,13 @@ export class UserDal implements IUserDal {
     }
     return this.prismaClient.user.update({
       where: { id: userId },
-      data: { state: "active" },
+      data: { state: ACTIVE_USER },
     });
   }
 
   public blockedUsers(): Promise<User[]> {
     const users = this.prismaClient.user.findMany({
-      where: { state: "blocked" },
+      where: { state: BLOCKED_USER },
     });
     return users;
   }
