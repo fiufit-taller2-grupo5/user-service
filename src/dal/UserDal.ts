@@ -149,12 +149,13 @@ export class UserDal implements IUserDal {
     }
   }
 
-  public async blockUser(userId: number): Promise<void> {
+  public async blockUser(userId: number): Promise<User> {
     await this.findById(userId);
-    await this.prismaClient.user.update({
+    const user = await this.prismaClient.user.update({
       where: { id: userId },
       data: { state: "blocked" },
     });
+    return user;
   }
 
   public async getData(userId: number): Promise<UserMetadata> {
