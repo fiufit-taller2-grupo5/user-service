@@ -65,11 +65,14 @@ export class UserController {
 
   }
 
+  public async userByEmail(email: string, skipAdmins: boolean) {
+    const user = await this.userDal.findByEmail(email, skipAdmins);
+    return user;
+  }
+
   private async getUserByEmail(req: Request, res: Response, email: string) {
-
-    const user = await this.userDal.findByEmail(email);
+    const user = await this.userDal.findByEmail(email, true);
     return res.status(OK_CODE).json(user);
-
   }
 
   public async newUser(req: Request, res: Response) {
@@ -82,9 +85,7 @@ export class UserController {
 
 
     const newUser = await this.userDal.create(name, email);
-    return res.status(CREATED_CODE).json({
-      status: `User ${newUser.name} with id ${newUser.id}`,
-    });
+    return res.status(CREATED_CODE).json(newUser);
 
   }
 
@@ -110,6 +111,23 @@ export class UserController {
       .status(OK_CODE)
       .json({ status: `Metadata added for user with id ${userId}` });
 
+  }
+
+  public async updateUser(req: Request, res: Response) {
+    // this endpoint was only created for blocking and unblocking user from admin dashboard
+    const userId = +req.params.id;
+    const { state } = req.body;
+
+    if (isNaN(userId) || state === undefined) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id or state" });
+    }
+    let user;
+    if (state === ACTIVE_USER) {
+      user = await this.userDal.unblockUser(userId);
+    } else {
+      user = await this.userDal.blockUser(userId);
+    }
+    return res.status(OK_CODE).json(user);
   }
 
   public async isBlocked(userId: any) {

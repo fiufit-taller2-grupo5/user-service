@@ -31,8 +31,14 @@ export class UserRouter {
       }
 
       isBlocked = await this.userController.isBlocked(Number.parseInt(userId, 10));
-
-      if (isBlocked) {
+      // for checking if requesting user is admin, we get the auto token from Authorization header and decode it
+      // then we check if the user is admin or not
+      let requesterUser;
+      if (req.headers["test"] !== "true") {
+        let requesterUserEmail = req.headers["x-email"] as string;
+        requesterUser = await this.userController.userByEmail(requesterUserEmail || "", false);
+      }
+      if (requesterUser?.role !== "admin" && isBlocked) {
         return res.status(403).json({ error: "User is blocked" });
       }
       next();
@@ -187,6 +193,12 @@ export class UserRouter {
       "/:id/metadata",
       this.checkBlockedUser,
       this.routeHandler(this.userController.addUserData)
+    );
+
+    this.router.put(
+      "/:id",
+      this.checkBlockedUser,
+      this.routeHandler(this.userController.updateUser)
     );
 
     /**

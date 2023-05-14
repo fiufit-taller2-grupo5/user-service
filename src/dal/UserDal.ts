@@ -85,9 +85,9 @@ export class UserDal implements IUserDal {
     return user;
   }
 
-  public async findByEmail(email: string): Promise<User> {
+  public async findByEmail(email: string, skipAdmins: boolean): Promise<User> {
     const user = await this.prismaClient.user.findFirst({
-      where: { email: email, role: REGULAR_USER },
+      where: { email: email, role: skipAdmins ? REGULAR_USER : undefined },
     });
     if (user === null) {
       throw new NotFoundError(`user with email ${email} not found`);
