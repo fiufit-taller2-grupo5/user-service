@@ -93,6 +93,8 @@ export class UserRouter {
      */
     this.router.get("/", this.routeHandler(this.userController.getAllUsers));
 
+    this.router.get("/by_email/:email", this.routeHandler(this.userController.findUserByEmail));
+
     this.router.delete("/", this.routeHandler(this.userController.deleteAllUsers));
 
     /**

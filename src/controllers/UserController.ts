@@ -70,6 +70,12 @@ export class UserController {
     return user;
   }
 
+  public async findUserByEmail(req: Request, res: Response) {
+    const email = req.params.email;
+    const user = await this.userByEmail(email, false);
+    return res.status(OK_CODE).json(user);
+  }
+
   private async getUserByEmail(req: Request, res: Response, email: string) {
     const user = await this.userDal.findByEmail(email, true);
     return res.status(OK_CODE).json(user);
