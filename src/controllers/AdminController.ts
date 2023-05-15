@@ -19,9 +19,6 @@ export class AdminController {
     const admins = await this.adminDal.findAll();
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${admins.length}`);
-    if (admins.length === 0) {
-      return res.status(OK_CODE).json({ message: "No admins found" });
-    }
     return res.status(OK_CODE).json(admins);
   }
 
