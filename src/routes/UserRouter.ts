@@ -23,23 +23,15 @@ export class UserRouter {
 
   public checkBlockedUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let isBlocked = false;
       let userId = req.params.id || req.body.userId;
-
       if (isNaN(userId as any)) {
-        return res.status(404).json({ error: `Invalid id: ${userId}` });
+        return res.status(404).json({ message: `Invalid id: ${userId}` });
       }
 
-      isBlocked = await this.userController.isBlocked(Number.parseInt(userId, 10));
-      // for checking if requesting user is admin, we get the auto token from Authorization header and decode it
-      // then we check if the user is admin or not
-      let requesterUser;
-      if (req.headers["test"] !== "true") {
-        let requesterUserEmail = req.headers["x-email"] as string;
-        requesterUser = await this.userController.userByEmail(requesterUserEmail || "", false);
-      }
-      if (requesterUser?.role !== "admin" && isBlocked) {
-        return res.status(403).json({ error: "User is blocked" });
+      const isRequestedUserBlocked = await this.userController.isBlocked(Number.parseInt(userId, 10));
+
+      if (req.headers["x-role"] !== "admin" && isRequestedUserBlocked) {
+        return res.status(403).json({ message: "User is blocked" });
       }
       next();
     } catch (err) {

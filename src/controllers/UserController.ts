@@ -1,16 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import {
   BAD_REQUEST_CODE,
-  CONFLICT_CODE,
   CREATED_CODE,
   DELETED_CODE,
-  INTERNAL_SERVER_ERROR_CODE,
   NOT_FOUND_CODE,
   OK_CODE,
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
 import { getResetPasswordUrl } from "../firebase/frebaseUtils";
 import { ACTIVE_USER } from "../constants/userStateConstants";
+import { User } from "@prisma/client";
 
 export class UserController {
   private userDal: IUserDal;
@@ -19,18 +18,21 @@ export class UserController {
     this.userDal = userDal;
   }
 
+  private isAdmin(req: Request) {
+    return req.headers["x-role"] === "admin"
+  }
+
 
   public async getAllUsers(req: Request, res: Response) {
-    if (req.query.id !== undefined) {
-      return await this.getUserById(req, res, +req.query.id);
-    }
-    if (req.query.email !== undefined) {
-      return await this.getUserByEmail(req, res, req.query.email as string);
+    let users: User[] = [];
+    if (this.isAdmin(req)) {
+      users = await this.userDal.findAll({
+        skipBlocked: true,
+      });
+    } else {
+      users = await this.userDal.findAll({ skipBlocked: false });
     }
 
-    const users = await this.userDal.findAll({
-      skipBlocked: req.query.skipBlocked === "true",
-    });
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
     res.set("X-Total-Count", `${users.length}`);
     return res.status(OK_CODE).json(users);
@@ -42,7 +44,7 @@ export class UserController {
     const user = await this.userDal.deleteById(userId);
     return res
       .status(DELETED_CODE)
-      .json({ status: `User of id ${user.id} deleted_CODE` });
+      .json({ status: `User of id ${user.id} deleted` });
 
   }
 
@@ -54,17 +56,6 @@ export class UserController {
       .json({ status: "All users deleted_CODE" });
 
   }
-
-  private async getUserById(req: Request, res: Response, userId: number) {
-    if (isNaN(userId)) {
-      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
-    }
-
-    const user = await this.userDal.findById(userId);
-    return res.status(OK_CODE).json(user);
-
-  }
-
   public async userByEmail(email: string, skipAdmins: boolean) {
     const user = await this.userDal.findByEmail(email, skipAdmins);
     return user;
@@ -72,12 +63,7 @@ export class UserController {
 
   public async findUserByEmail(req: Request, res: Response) {
     const email = req.params.email;
-    const user = await this.userByEmail(email, false);
-    return res.status(OK_CODE).json(user);
-  }
-
-  private async getUserByEmail(req: Request, res: Response, email: string) {
-    const user = await this.userDal.findByEmail(email, true);
+    const user = await this.userDal.findByEmail(email, false);
     return res.status(OK_CODE).json(user);
   }
 
