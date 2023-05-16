@@ -219,8 +219,7 @@ export class UserRouter {
     this.router.post("/", this.routeHandler(this.userController.newUser));
 
     this.router.post(
-      "/changepassword",
-      this.checkBlockedUser,
+      "/resetPasswordEmail",
       this.routeHandler(this.userController.changePassword)
     );
 

@@ -178,7 +178,7 @@ export class App {
 
   public startListening() {
     this.app.listen(this.port, () => {
-      console.log(`Server listening on port ${this.port} :)`);
+      console.log(`User Service listening on port ${this.port} :)`);
     });
   }
 
