@@ -4,9 +4,9 @@ import credentials from "./credentials.json";
 
 dotenv.config();
 
-const firebaseApp = firebase.initializeApp({
+const firebaseAdmin = firebase.initializeApp({
   credential: firebase.credential.cert(credentials as firebase.ServiceAccount),
   databaseURL: process.env.FIREBASE_DATABASE_URL,
 });
 
-export default firebaseApp;
+export default firebaseAdmin;
