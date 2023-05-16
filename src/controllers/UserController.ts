@@ -5,9 +5,10 @@ import {
   DELETED_CODE,
   NOT_FOUND_CODE,
   OK_CODE,
+  INTERNAL_SERVER_ERROR_CODE
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
-import { getResetPasswordUrl } from "../firebase/frebaseUtils";
+import { sendResetPasswordEmail } from "../firebase/firebaseUtils";
 import { ACTIVE_USER } from "../constants/userStateConstants";
 import { User } from "@prisma/client";
 
@@ -163,9 +164,12 @@ export class UserController {
         .json({ error: "email is required" });
     }
 
-    const url = await getResetPasswordUrl(email);
-    return res.status(OK_CODE).json({ url: url });
-
+    const emailSentOk = await sendResetPasswordEmail(email);
+    if (emailSentOk) {
+      return res.status(OK_CODE).json({ "message": "reset password email sent succesfully"});
+    } else {
+      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ "message": "error sending reset password email"})
+    }
   }
 
   public async blockUser(req: Request, res: Response) {
