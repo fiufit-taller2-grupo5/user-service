@@ -27,10 +27,10 @@ export class UserController {
     let users: User[] = [];
     if (this.isAdmin(req)) {
       users = await this.userDal.findAll({
-        skipBlocked: true,
+        skipBlocked: false,
       });
     } else {
-      users = await this.userDal.findAll({ skipBlocked: false });
+      users = await this.userDal.findAll({ skipBlocked: true });
     }
 
     res.set("Access-Control-Expose-Headers", "X-Total-Count");
