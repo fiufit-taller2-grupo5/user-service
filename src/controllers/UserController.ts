@@ -11,6 +11,8 @@ import { IUserDal } from "../dal/IUserDal";
 import { sendResetPasswordEmail } from "../firebase/firebaseUtils";
 import { ACTIVE_USER } from "../constants/userStateConstants";
 import { User } from "@prisma/client";
+import { MetricName } from "../metrics/metrics_types";
+import { sendSystemMetric } from "../metrics/metrics_service";
 
 export class UserController {
   private userDal: IUserDal;
@@ -78,6 +80,9 @@ export class UserController {
 
 
     const newUser = await this.userDal.create(name, email);
+
+    await sendSystemMetric(MetricName.USER_CREATED);
+
     return res.status(CREATED_CODE).json(newUser);
 
   }
