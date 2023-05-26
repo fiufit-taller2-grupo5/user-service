@@ -78,8 +78,6 @@ export class UserController {
         .json({ error: "Missing name or email" });
     }
 
-    // timeout of 3000ms:
-    await new Promise(resolve => setTimeout(resolve, 3000));
     const newUser = await this.userDal.create(name, email);
 
     await sendSystemMetric(MetricName.USER_CREATED);
