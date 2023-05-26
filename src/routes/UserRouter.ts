@@ -89,6 +89,7 @@ export class UserRouter {
 
     this.router.delete("/", this.routeHandler(this.userController.deleteAllUsers));
 
+
     /**
      * @openapi
      * /api/users/{userId}:
