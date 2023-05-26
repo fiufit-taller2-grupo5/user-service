@@ -31,7 +31,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: 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
+          token: ${{ secrets.PAT }}
           repository: fiufit-taller2-grupo5/development-setup
           event-type: run-integration-tests
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
