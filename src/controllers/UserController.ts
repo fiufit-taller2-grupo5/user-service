@@ -80,7 +80,7 @@ export class UserController {
 
     const newUser = await this.userDal.create(name, email);
 
-    await sendSystemMetric(MetricName.USER_CREATED);
+    // await sendSystemMetric(MetricName.USER_CREATED);
 
     return res.status(CREATED_CODE).json(newUser);
 
