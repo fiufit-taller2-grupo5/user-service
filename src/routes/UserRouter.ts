@@ -230,6 +230,18 @@ export class UserRouter {
       this.routeHandler(this.userController.blockUser)
     );
 
+    this.router.post("/follow",
+      this.routeHandler(this.userController.followUser));
+
+    this.router.post("/unfollow",
+      this.routeHandler(this.userController.unfollowUser));
+
+    this.router.get("/:id/followers",
+      this.routeHandler(this.userController.getFollowers));
+
+    this.router.get("/:id/following",
+      this.routeHandler(this.userController.getFollowedUsers));
+
     this.router.post("/unblock",
       this.routeHandler(this.userController.unblockUser));
 

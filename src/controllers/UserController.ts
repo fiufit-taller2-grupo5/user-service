@@ -205,4 +205,54 @@ export class UserController {
     return res.status(OK_CODE).json(users);
 
   }
+
+  public async followUser(req: Request, res: Response) {
+    const userId = +req.body.id;
+    const followedId = +req.body.followedId;
+
+    if (isNaN(userId) || isNaN(followedId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Missing ids" });
+    }
+
+    const user = await this.userDal.followUser(userId, followedId);
+    return res.status(OK_CODE).json(user);
+  }
+
+  public async unfollowUser(req: Request, res: Response) {
+    const userId = +req.body.id;
+    const followedId = +req.body.followedId;
+
+    if (isNaN(userId) || isNaN(followedId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Missing ids" });
+    }
+
+    const user = await this.userDal.unfollowUser(userId, followedId);
+    // return user with text saying that user was unfollowed
+    return res.status(OK_CODE).json(user);
+
+
+  }
+
+  public async getFollowedUsers(req: Request, res: Response) {
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+
+    const users = await this.userDal.getFollowedUsers(userId);
+    return res.status(OK_CODE).json(users);
+  }
+
+  public async getFollowers(req: Request, res: Response) {
+    console.log("getFollowers");
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+
+    const users = await this.userDal.getFollowers(userId);
+    return res.status(OK_CODE).json(users);
+  }
 }

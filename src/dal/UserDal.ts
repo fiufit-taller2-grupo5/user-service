@@ -183,4 +183,65 @@ export class UserDal implements IUserDal {
     });
     return users;
   }
+
+  public async followUser(userId: number, followedId: number): Promise<void> {
+    await this.findById(userId);
+    await this.findById(followedId);
+
+    // check if user already follows the followed user
+    const userFollows = await this.prismaClient.userFollows.findFirst({
+      where: {
+        userId: userId,
+        followedId: followedId,
+      },
+    });
+    if (userFollows) {
+      throw new ConflictError(`user with id ${userId} already follows user with id ${followedId}`);
+    }
+    await this.prismaClient.userFollows.create({
+      data: {
+        userId: userId,
+        followedId: followedId,
+      },
+    });
+  }
+
+  public async unfollowUser(userId: number, followedId: number): Promise<void> {
+    await this.findById(userId);
+    await this.findById(followedId);
+
+    await this.prismaClient.userFollows.deleteMany({
+      where: {
+        userId: userId,
+        followedId: followedId,
+      },
+    });
+
+  }
+
+
+
+  public async getFollowedUsers(userId: number): Promise<User[]> {
+    await this.findById(userId);
+    const followedUsers = await this.prismaClient.userFollows.findMany({
+      where: { userId: userId },
+    });
+    const followedUsersIds = followedUsers.map((followedUser) => followedUser.followedId);
+    const users = await this.prismaClient.user.findMany({
+      where: { id: { in: followedUsersIds } },
+    });
+    return users;
+  }
+
+  public async getFollowers(userId: number): Promise<User[]> {
+    await this.findById(userId);
+    const followers = await this.prismaClient.userFollows.findMany({
+      where: { followedId: userId },
+    });
+    const followersIds = followers.map((follower) => follower.userId);
+    const users = await this.prismaClient.user.findMany({
+      where: { id: { in: followersIds } },
+    });
+    return users;
+  }
 }

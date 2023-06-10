@@ -17,4 +17,8 @@ export interface IUserDal {
   blockUser(userId: number): Promise<User>;
   unblockUser(userId: number): Promise<User | null>;
   blockedUsers(): Promise<User[]>;
+  followUser(userId: number, followedId: number): Promise<void>;
+  unfollowUser(userId: number, followedId: number): Promise<void>;
+  getFollowedUsers(userId: number): Promise<User[]>;
+  getFollowers(userId: number): Promise<User[]>;
 }

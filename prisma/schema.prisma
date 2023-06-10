@@ -32,6 +32,7 @@ model User {
   state        UserState     @default(active)
   role         Role          @default(user)
   UserMetadata UserMetadata?
+  UserFollows  UserFollows[]
 
   @@schema("user-service")
 }
@@ -58,5 +59,14 @@ model UserMetadata {
   location  String
   interests Interests[]
 
+  @@schema("user-service")
+}
+
+model UserFollows {
+  userId     Int
+  followedId Int
+  User       User @relation(fields: [userId], references: [id])
+
+  @@id([userId, followedId])
   @@schema("user-service")
 }
