@@ -188,7 +188,6 @@ export class UserDal implements IUserDal {
     await this.findById(userId);
     await this.findById(followedId);
 
-    // check if user already follows the followed user
     const userFollows = await this.prismaClient.userFollows.findFirst({
       where: {
         userId: userId,
@@ -197,6 +196,10 @@ export class UserDal implements IUserDal {
     });
     if (userFollows) {
       throw new ConflictError(`user with id ${userId} already follows user with id ${followedId}`);
+    }
+
+    if (userId === followedId) {
+      throw new ConflictError(`user with id ${userId} cannot follow himself`);
     }
     await this.prismaClient.userFollows.create({
       data: {
@@ -209,6 +212,20 @@ export class UserDal implements IUserDal {
   public async unfollowUser(userId: number, followedId: number): Promise<void> {
     await this.findById(userId);
     await this.findById(followedId);
+
+    const userFollows = await this.prismaClient.userFollows.findFirst({
+      where: {
+        userId: userId,
+        followedId: followedId,
+      },
+    });
+    if (!userFollows) {
+      throw new ConflictError(`user with id ${userId} does not follow user with id ${followedId}`);
+    }
+
+    if (userId === followedId) {
+      throw new ConflictError(`user with id ${userId} cannot unfollow himself`);
+    }
 
     await this.prismaClient.userFollows.deleteMany({
       where: {
