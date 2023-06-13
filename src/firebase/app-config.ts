@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import { FirebaseOptions, initializeApp } from 'firebase/app';
-
+// import  storage from './storage-config';
 dotenv.config();
 
 const firebaseConfig: FirebaseOptions = {

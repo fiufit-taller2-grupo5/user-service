@@ -94,6 +94,14 @@ export class UserController {
   public async addUserData(req: Request, res: Response) {
     const userId = +req.params.id;
     const { weight, height, birthDate, location, interests } = req.body;
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+    if (!weight || !height || !birthDate || !location || !interests) {
+      return res
+        .status(BAD_REQUEST_CODE)
+        .json({ error: "Missing weight, or height or birthDate or location or interests" });
+    }
 
     await this.userDal.addData({
       userId,
@@ -255,4 +263,6 @@ export class UserController {
     const users = await this.userDal.getFollowers(userId);
     return res.status(OK_CODE).json(users);
   }
+
+  
 }
