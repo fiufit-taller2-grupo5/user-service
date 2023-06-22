@@ -16,7 +16,6 @@ type PrismaError = {
 
 function convertPrismaErrorToUserFriendly(prismaError: PrismaError): string {
   let userFriendlyMessage = prismaError.message;
-  console.log("primsa code", prismaError.code);
   switch (prismaError.code) {
     case "P2000":
       userFriendlyMessage = `The value provided for '${prismaError.meta.target?.join(
@@ -89,9 +88,7 @@ function convertPrismaErrorToUserFriendly(prismaError: PrismaError): string {
       userFriendlyMessage = "The value provided is out of range.";
       break;
     case "P2021":
-      userFriendlyMessage = `The table '${prismaError.meta.target?.join(
-        ", "
-      )}' doesn't exist.`;
+      userFriendlyMessage = `The table '${prismaError.meta.table}' doesn't exist.`;
       break;
     case "P2022":
       userFriendlyMessage = `The field '${prismaError.meta.target?.join(
@@ -157,13 +154,13 @@ export class App {
         res: Response,
         next: NextFunction // esencial que tenga este parametro y no lo use -NO BORRAR
       ) => {
-        const error: any = err;
-        error.code = err.code || 500;
+        const error: any = JSON.parse(JSON.stringify(err));
+        error.code = typeof err.code === "number" ? err.code : 500;
         error.status = "error";
         return res.status(error.code).json({
           status: error.status,
           message: (err as any).meta
-            ? convertPrismaErrorToUserFriendly(error as PrismaError)
+            ? "(dev-only error message): There was an error with the database: " + convertPrismaErrorToUserFriendly(err as any as PrismaError)
             : err.message,
           fields: (err as any).meta ?? undefined,
           fullMessage: err.message,
