@@ -222,8 +222,10 @@ export class UserController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Missing ids" });
     }
 
-    const user = await this.userDal.followUser(userId, followedId);
-    return res.status(OK_CODE).json(user);
+    await this.userDal.followUser(userId, followedId);
+    return res.status(OK_CODE).json({
+      status: `User with id ${userId} followed user with id ${followedId}`,
+    });
   }
 
   public async unfollowUser(req: Request, res: Response) {
@@ -234,9 +236,11 @@ export class UserController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Missing ids" });
     }
 
-    const user = await this.userDal.unfollowUser(userId, followedId);
+    await this.userDal.unfollowUser(userId, followedId);
     // return user with text saying that user was unfollowed
-    return res.status(OK_CODE).json(user);
+    return res.status(OK_CODE).json({
+      status: `User with id ${userId} unfollowed user with id ${followedId}`,
+    });
 
 
   }
@@ -264,5 +268,5 @@ export class UserController {
     return res.status(OK_CODE).json(users);
   }
 
-  
+
 }
