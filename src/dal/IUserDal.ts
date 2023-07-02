@@ -21,4 +21,6 @@ export interface IUserDal {
   unfollowUser(userId: number, followedId: number): Promise<void>;
   getFollowedUsers(userId: number): Promise<User[]>;
   getFollowers(userId: number): Promise<User[]>;
+  setPushToken(userId: number, token: string): Promise<void>;
+  getPushToken(userId: number): Promise<string | null>;
 }

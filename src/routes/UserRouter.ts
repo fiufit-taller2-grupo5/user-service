@@ -246,6 +246,10 @@ export class UserRouter {
       this.routeHandler(this.userController.unblockUser));
 
     this.router.get("/blocked", this.routeHandler(this.userController.getBlockedUsers));
+
+    this.router.post("/:id/set-push-token", this.routeHandler(this.userController.setPushToken));
+
+    this.router.get("/:id/get-push-token", this.routeHandler(this.userController.getPushToken));
   }
 
   private routeHandler(method: Function) {

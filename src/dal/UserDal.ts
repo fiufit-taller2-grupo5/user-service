@@ -261,4 +261,24 @@ export class UserDal implements IUserDal {
     });
     return users;
   }
+
+  public async setPushToken(userId: number, token: string): Promise<void> {
+    await this.findById(userId);
+    await this.prismaClient.userPushToken.upsert({
+      where: { userId: userId },
+      create: { userId: userId, token: token },
+      update: { token: token },
+    })
+  }
+
+  public async getPushToken(userId: number): Promise<string> {
+    await this.findById(userId);
+    const pushToken = await this.prismaClient.userPushToken.findUnique({
+      where: { userId: userId },
+    });
+    if (!pushToken) {
+      throw new NotFoundError(`user with id ${userId} has no push token`);
+    }
+    return pushToken.token;
+  }
 }

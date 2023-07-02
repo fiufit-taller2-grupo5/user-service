@@ -24,15 +24,16 @@ enum Role {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
-  name         String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  state        UserState     @default(active)
-  role         Role          @default(user)
-  UserMetadata UserMetadata?
-  UserFollows  UserFollows[]
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  state         UserState       @default(active)
+  role          Role            @default(user)
+  UserMetadata  UserMetadata?
+  UserFollows   UserFollows[]
+  UserPushToken UserPushToken[]
 
   @@schema("user-service")
 }
@@ -68,5 +69,14 @@ model UserFollows {
   User       User @relation(fields: [userId], references: [id])
 
   @@id([userId, followedId])
+  @@schema("user-service")
+}
+
+model UserPushToken {
+  token  String @unique
+  userId Int
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@id([userId])
   @@schema("user-service")
 }
