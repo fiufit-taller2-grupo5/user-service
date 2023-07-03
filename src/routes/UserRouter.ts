@@ -259,6 +259,11 @@ export class UserRouter {
       upload.single('file'), // Use Multer middleware to handle the file upload
       this.routeHandler(this.userController.addProfilePicture)
     );
+
+    this.router.get(
+      "/:id/profilePicture",
+      this.routeHandler(this.userController.getProfilePicture)
+    );
   }
 
   private routeHandler(method: Function) {

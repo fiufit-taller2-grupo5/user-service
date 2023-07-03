@@ -24,4 +24,5 @@ export interface IUserDal {
   setPushToken(userId: number, token: string): Promise<void>;
   getPushToken(userId: number): Promise<string | null>;
   addProfilePicture(userId: number, pictureUrl: string): Promise<void>;
+  getProfilePicture(userId: number): Promise<string | null>;
 }

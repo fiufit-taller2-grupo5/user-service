@@ -281,10 +281,25 @@ export class UserDal implements IUserDal {
   
   public async addProfilePicture(userId: number, pictureUrl: string): Promise<void> {
     await this.findById(userId);
+    // await this.prismaClient.userMetadata.update({
+    //   where: { userId: userId },
+    //   data: {
+    //     multimedia: {
+    //       create: [
+    //         {
+    //           url: "AAAAAAAAAAAAAA",
+    //           type: "png",
+    //         },
+    //       ],
+    //     },
+    //   } as any,
+    // });
+    // delete the existing profile picture metadata if it exists and create a new one
     await this.prismaClient.userMetadata.update({
       where: { userId: userId },
       data: {
         multimedia: {
+          deleteMany: {},
           create: [
             {
               url: pictureUrl,
@@ -294,5 +309,17 @@ export class UserDal implements IUserDal {
         },
       } as any,
     });
+  }
+
+  public async getProfilePicture(userId: number): Promise<string> {
+    await this.findById(userId);
+    const userMetadata = await this.prismaClient.userMetadata.findUnique({
+      where: { userId: userId },
+      include: { multimedia: true },
+    });
+    if (!userMetadata) {
+      throw new NotFoundError(`user with id ${userId} has no profile picture`);
+    }
+    return userMetadata.multimedia[0].url;
   }
 }

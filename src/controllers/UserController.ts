@@ -321,5 +321,18 @@ export class UserController {
       res.status(500).json({ error: 'Failed to upload profile picture: ' + error });
     }
   }
+
+  public async getProfilePicture(req: Request, res: Response) {
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+
+    const pictureUrl = await this.userDal.getProfilePicture(userId);
+    console.log("pictureUrl", pictureUrl);
+    return res.status(OK_CODE).json(pictureUrl);
+  }
+
 }
 
