@@ -275,5 +275,3 @@ export class UserRouter {
     return method.bind(this.userController);
   }
 }
-
-
