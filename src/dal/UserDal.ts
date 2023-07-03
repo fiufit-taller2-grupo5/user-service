@@ -7,6 +7,17 @@ import {
   NO_METADATA_FOUND,
 } from "../constants/responseMessages";
 import { ConflictError, NotFoundError } from "../Error";
+import axios, { AxiosRequestConfig } from "axios";
+
+// interface UserWithTrainings extends User {
+//   trainings: number;
+//   UserMetadata?: {
+//     multimedia: Array<{
+//       url: string;
+//     }>;
+//   } | null; // Include 'null' in the type definition
+// }
+
 export class UserDal implements IUserDal {
   private prismaClient: PrismaClient;
 
@@ -14,8 +25,47 @@ export class UserDal implements IUserDal {
     this.prismaClient = prismaClient;
   }
 
+  
+
+  
+  // public async findAll({ skipBlocked }: { skipBlocked: boolean }): Promise<UserWithTrainings[]> {
+  //   const users = await this.prismaClient.user.findMany({
+  //     where: {
+  //       role: REGULAR_USER,
+  //       state: skipBlocked ? { not: BLOCKED_USER } : undefined,
+  //     },
+  //     include: {
+  //       UserMetadata: {
+  //         include: {
+  //           multimedia: {
+  //             select: {
+  //               url: true,
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   });
+  
+  //   const usersWithTrainings = await Promise.all(users.map(async (user) => {
+  //     const trainings = await axios.get(`training-service/api/trainings/user_training/${user.id}/count`);
+  //     return {
+  //       ...user,
+  //       trainings: trainings.data,
+  //     };
+  //   }
+  //   ));
+
+  //   return usersWithTrainings.map((user) => {
+  //     if (user.UserMetadata) {
+  //       user.UserMetadata.multimedia[0].url = user.UserMetadata.multimedia[0]?.url;
+  //     }
+  //     return user;
+  //   }
+  //   );
+  // }
+
   public async findAll({ skipBlocked }: { skipBlocked: boolean }): Promise<User[]> {
-    // add to the result the profile picture url in the metadata of each user
     const users = await this.prismaClient.user.findMany({
       where: {
         role: REGULAR_USER,
@@ -33,16 +83,9 @@ export class UserDal implements IUserDal {
         },
       },
     });
-    // // add the amount of trainings of each user
-    // for (const user of users) {
-    //   const trainings = await this.prismaClient.training.findMany({
-    //     where: { userId: user.id },
-    //   });
-    //   user.trainings = trainings.length;
-    // }
+
     return users.map((user) => {
       if (user.UserMetadata) {
-        // only return the url, not the whole multimedia object
         user.UserMetadata.multimedia[0].url = user.UserMetadata.multimedia[0]?.url;
       }
       return user;
