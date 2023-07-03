@@ -4,10 +4,7 @@ import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
 import { Interests } from "@prisma/client";
 import {
-  NOT_FOUND,
   NO_METADATA_FOUND,
-  USER_IS_ADMIN,
-  EMAIL_IN_USE,
 } from "../constants/responseMessages";
 import { ConflictError, NotFoundError } from "../Error";
 export class UserDal implements IUserDal {
@@ -80,7 +77,7 @@ export class UserDal implements IUserDal {
       where: { name: name, role: REGULAR_USER },
     });
     if (user === null) {
-      throw new NotFoundError(`user with name${name} not found`);
+      throw new NotFoundError(`user with name ${name} not found`);
     }
     return user;
   }
@@ -101,7 +98,7 @@ export class UserDal implements IUserDal {
       where: { email: email },
     });
     if (user) {
-      throw new ConflictError(`user with email ${email} already exists`);
+      throw new ConflictError(`email ${email} ya está en uso`);
     }
     return await this.prismaClient.user.create({
       data: {
@@ -195,11 +192,11 @@ export class UserDal implements IUserDal {
       },
     });
     if (userFollows) {
-      throw new ConflictError(`user with id ${userId} already follows user with id ${followedId}`);
+      throw new ConflictError(`Ya sigues al usuario`);
     }
 
     if (userId === followedId) {
-      throw new ConflictError(`user with id ${userId} cannot follow himself`);
+      throw new ConflictError(`No puedes seguirte a ti mismo`);
     }
     await this.prismaClient.userFollows.create({
       data: {
@@ -220,11 +217,11 @@ export class UserDal implements IUserDal {
       },
     });
     if (!userFollows) {
-      throw new ConflictError(`user with id ${userId} does not follow user with id ${followedId}`);
+      throw new ConflictError("No sigues a este usuario");
     }
 
     if (userId === followedId) {
-      throw new ConflictError(`user with id ${userId} cannot unfollow himself`);
+      throw new ConflictError(`No puedes dejar de seguirte a ti mismo`);
     }
 
     await this.prismaClient.userFollows.deleteMany({

@@ -75,7 +75,7 @@ export class UserController {
     if (!name || !email) {
       return res
         .status(BAD_REQUEST_CODE)
-        .json({ error: "Missing name or email" });
+        .json({ error: "Falta nombre o contraseña" });
     }
 
     const newUser = await this.userDal.create(name, email);
@@ -100,7 +100,7 @@ export class UserController {
     if (!weight || !height || !birthDate || !location || !interests) {
       return res
         .status(BAD_REQUEST_CODE)
-        .json({ error: "Missing weight, or height or birthDate or location or interests" });
+        .json({ error: "Falta peso o altura o fecha de nacimiento o localización o intereses" });
     }
 
     await this.userDal.addData({
@@ -178,9 +178,9 @@ export class UserController {
 
     const emailSentOk = await sendResetPasswordEmail(email);
     if (emailSentOk) {
-      return res.status(OK_CODE).json({ "message": "reset password email sent succesfully" });
+      return res.status(OK_CODE).json({ "message": "Email de recuperación enviado" });
     } else {
-      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ "message": "error sending reset password email" })
+      return res.status(INTERNAL_SERVER_ERROR_CODE).json({ "message": "error al mandar email de recuperación" })
     }
   }
 
@@ -195,8 +195,7 @@ export class UserController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
-
-    const user = await this.userDal.unblockUser(userId);
+    await this.userDal.unblockUser(userId);
     return res.status(OK_CODE).json({ status: "User unblocked" });
 
   }
@@ -205,10 +204,6 @@ export class UserController {
 
     const users = await this.userDal.blockedUsers();
     console.log(`Found ${users.length} blocked users`);
-
-    if (users && users.length === 0) {
-      return res.status(OK_CODE).json({ error: "No blocked users found" });
-    }
 
     return res.status(OK_CODE).json(users);
 
