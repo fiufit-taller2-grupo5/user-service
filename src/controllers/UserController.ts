@@ -97,10 +97,10 @@ export class UserController {
     if (isNaN(userId)) {
       return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
-    if (!weight || !height || !birthDate || !location || !interests) {
+    if (!location) {
       return res
         .status(BAD_REQUEST_CODE)
-        .json({ error: "Falta peso o altura o fecha de nacimiento o localización o intereses" });
+        .json({ error: "Falta ubicación para continuar" });
     }
 
     await this.userDal.addData({
