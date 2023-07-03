@@ -59,6 +59,17 @@ model UserMetadata {
   birthDate DateTime?
   location  String
   interests Interests[]
+  multimedia Multimedia[]
+
+  @@schema("user-service")
+}
+
+model Multimedia {
+  id        Int      @id @default(autoincrement())
+  url       String
+  type      String
+  userId    Int
+  userMetadata UserMetadata? @relation(fields: [userId], references: [userId])
 
   @@schema("user-service")
 }

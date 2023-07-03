@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { UserController } from "../controllers/UserController";
 type MiddlewareFn = (req: Request, res: Response) => Promise<any>;
+import multer from "multer";
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 
 const asyncErrorHandler =
   (fn: MiddlewareFn) => (req: Request, res: Response, next: NextFunction) => {
@@ -250,6 +254,11 @@ export class UserRouter {
     this.router.post("/:id/set-push-token", this.routeHandler(this.userController.setPushToken));
 
     this.router.get("/:id/get-push-token", this.routeHandler(this.userController.getPushToken));
+    this.router.post(
+      "/:id/profilePicture",
+      upload.single('file'), // Use Multer middleware to handle the file upload
+      this.routeHandler(this.userController.addProfilePicture)
+    );
   }
 
   private routeHandler(method: Function) {

@@ -278,4 +278,21 @@ export class UserDal implements IUserDal {
     }
     return pushToken.token;
   }
+  
+  public async addProfilePicture(userId: number, pictureUrl: string): Promise<void> {
+    await this.findById(userId);
+    await this.prismaClient.userMetadata.update({
+      where: { userId: userId },
+      data: {
+        multimedia: {
+          create: [
+            {
+              url: pictureUrl,
+              type: "png",
+            },
+          ],
+        },
+      } as any,
+    });
+  }
 }

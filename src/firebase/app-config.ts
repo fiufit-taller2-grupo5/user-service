@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import { FirebaseOptions, initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
 
 dotenv.config();
 
@@ -15,5 +16,7 @@ const firebaseConfig: FirebaseOptions = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+const storage = getStorage(firebaseApp);
 
+export { storage };
 export default firebaseApp;

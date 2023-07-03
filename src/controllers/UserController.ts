@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+
 import {
   BAD_REQUEST_CODE,
   CREATED_CODE,
@@ -8,11 +9,15 @@ import {
   INTERNAL_SERVER_ERROR_CODE
 } from "../constants/httpConstants";
 import { IUserDal } from "../dal/IUserDal";
-import { sendResetPasswordEmail } from "../firebase/firebaseUtils";
+import { sendResetPasswordEmail, uploadFile } from "../firebase/firebaseUtils";
 import { ACTIVE_USER } from "../constants/userStateConstants";
 import { User } from "@prisma/client";
 import { MetricName } from "../metrics/metrics_types";
 import { sendSystemMetric } from "../metrics/metrics_service";
+import multer from "multer";
+var storage = multer.memoryStorage(); 
+ var upload = multer({ storage: storage });
+
 
 export class UserController {
   private userDal: IUserDal;
@@ -286,5 +291,35 @@ export class UserController {
     return res.status(OK_CODE).json(token);
   }
 
+  public async addProfilePicture(req: Request, res: Response) {
+    console.log("uploadedFile", req.file);
+    try {
+      // check if user exists
 
+
+      const userId = +req.params.id;
+      const uploadedFile = req.file;
+  
+      if (!uploadedFile) {
+        return res.status(400).json({ error: 'Missing file' });
+      }
+
+      if (isNaN(userId)) {
+        return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+      }
+  
+      // Assuming you have a file path and a user ID to generate a unique path
+      const filePath = `profilePictures/user${userId}`;
+      const downloadURL = await uploadFile(uploadedFile, filePath);
+  
+      // Update user's profile picture URL in your database
+      // Replace 'updateUserPicture' with your own function to update the profile picture URL
+      await this.userDal.addProfilePicture(userId, downloadURL);
+      res.status(200).json({ message: 'Profile picture uploaded successfully. Download in: ' + downloadURL});
+    } catch (error) {
+      console.log('Failed uploading profile picture:', error);
+      res.status(500).json({ error: 'Failed to upload profile picture: ' + error });
+    }
+  }
 }
+

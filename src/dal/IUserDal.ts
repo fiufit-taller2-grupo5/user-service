@@ -23,4 +23,5 @@ export interface IUserDal {
   getFollowers(userId: number): Promise<User[]>;
   setPushToken(userId: number, token: string): Promise<void>;
   getPushToken(userId: number): Promise<string | null>;
+  addProfilePicture(userId: number, pictureUrl: string): Promise<void>;
 }
