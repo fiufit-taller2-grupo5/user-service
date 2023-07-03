@@ -378,4 +378,33 @@ export class UserDal implements IUserDal {
     return userMetadata.multimedia[0].url;
   }
 
+  // model Notification {
+  //   id        Int      @id @default(autoincrement())
+  //   title     String
+  //   body      String
+  //   userId    Int
+  //   user      User     @relation(fields: [userId], references: [id])
+  
+  //   @@schema("user-service")
+  // }
+
+  public async newNotification(userId: number, title: string, body: string): Promise<void> {
+    await this.findById(userId);
+    await this.prismaClient.notification.create({
+      data: {
+        title: title,
+        body: body,
+        userId: userId,
+      },
+    });
+  }
+
+  public async getNotifications(userId: number): Promise<any> {
+    await this.findById(userId);
+    const notifications = await this.prismaClient.notification.findMany({
+      where: { userId: userId },
+    });
+    return notifications;
+  }
+
 }

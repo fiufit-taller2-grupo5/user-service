@@ -328,5 +328,33 @@ export class UserController {
     return res.status(OK_CODE).json(pictureUrl);
   }
 
+  public async newNotification(req: Request, res: Response) {
+    const userId = +req.params.id;
+    const { title, body } = req.body;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+
+    if (!title || !body) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Missing title or body" });
+    }
+
+    await this.userDal.newNotification(userId, title, body);
+    return res.status(OK_CODE).json({ status: "Notification saved" });
+  }
+
+  public async getNotifications(req: Request, res: Response) {
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+
+    const notifications = await this.userDal.getNotifications(userId);
+    return res.status(OK_CODE).json(notifications);
+  }
+
+
 }
 

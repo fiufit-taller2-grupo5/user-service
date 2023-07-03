@@ -264,6 +264,16 @@ export class UserRouter {
       "/:id/profilePicture",
       this.routeHandler(this.userController.getProfilePicture)
     );
+
+    this.router.post(
+      "/:id/notifications",
+      this.routeHandler(this.userController.newNotification)
+    );
+
+    this.router.get(
+      "/:id/notifications",
+      this.routeHandler(this.userController.getNotifications)
+    );
   }
 
   private routeHandler(method: Function) {

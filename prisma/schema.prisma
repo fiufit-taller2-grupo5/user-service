@@ -34,6 +34,7 @@ model User {
   UserMetadata  UserMetadata?
   UserFollows   UserFollows[]
   UserPushToken UserPushToken[]
+  Notification  Notification[]
 
   @@schema("user-service")
 }
@@ -70,6 +71,16 @@ model Multimedia {
   type      String
   userId    Int
   userMetadata UserMetadata? @relation(fields: [userId], references: [userId])
+
+  @@schema("user-service")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 
   @@schema("user-service")
 }
