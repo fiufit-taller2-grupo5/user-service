@@ -15,11 +15,37 @@ export class UserDal implements IUserDal {
   }
 
   public async findAll({ skipBlocked }: { skipBlocked: boolean }): Promise<User[]> {
-    return await this.prismaClient.user.findMany({
+    // add to the result the profile picture url in the metadata of each user
+    const users = await this.prismaClient.user.findMany({
       where: {
         role: REGULAR_USER,
         state: skipBlocked ? { not: BLOCKED_USER } : undefined,
       },
+      include: {
+        UserMetadata: {
+          include: {
+            multimedia: {
+              select: {
+                url: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    // // add the amount of trainings of each user
+    // for (const user of users) {
+    //   const trainings = await this.prismaClient.training.findMany({
+    //     where: { userId: user.id },
+    //   });
+    //   user.trainings = trainings.length;
+    // }
+    return users.map((user) => {
+      if (user.UserMetadata) {
+        // only return the url, not the whole multimedia object
+        user.UserMetadata.multimedia[0].url = user.UserMetadata.multimedia[0]?.url;
+      }
+      return user;
     });
   }
 
@@ -281,20 +307,6 @@ export class UserDal implements IUserDal {
   
   public async addProfilePicture(userId: number, pictureUrl: string): Promise<void> {
     await this.findById(userId);
-    // await this.prismaClient.userMetadata.update({
-    //   where: { userId: userId },
-    //   data: {
-    //     multimedia: {
-    //       create: [
-    //         {
-    //           url: "AAAAAAAAAAAAAA",
-    //           type: "png",
-    //         },
-    //       ],
-    //     },
-    //   } as any,
-    // });
-    // delete the existing profile picture metadata if it exists and create a new one
     await this.prismaClient.userMetadata.update({
       where: { userId: userId },
       data: {
@@ -322,4 +334,5 @@ export class UserDal implements IUserDal {
     }
     return userMetadata.multimedia[0].url;
   }
+
 }
