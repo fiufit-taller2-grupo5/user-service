@@ -85,7 +85,7 @@ export class UserDal implements IUserDal {
     });
 
     return users.map((user) => {
-      if (user.UserMetadata) {
+      if (user.UserMetadata?.multimedia[0]?.url) {
         user.UserMetadata.multimedia[0].url = user.UserMetadata.multimedia[0]?.url;
       }
       return user;
