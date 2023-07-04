@@ -105,20 +105,31 @@ export class UserDal implements IUserDal {
   public async findByIdWithMetadata(userId: number): Promise<User & UserMetadata> {
     const userWithMetadata = await this.prismaClient.user.findFirst({
       where: { id: userId, role: REGULAR_USER },
-      include: { UserMetadata: true },
+      include: {
+        UserMetadata: {
+          include: {
+            multimedia: {
+              select: {
+                url: true,
+              },
+            },
+          },
+        },
+      },
     });
     if (userWithMetadata === null) {
       throw new NotFoundError(`user with id ${userId} not found`);
     }
 
+    // add multimedia url to user object
     const flattenedUser: any = {
       ...userWithMetadata,
-      ...userWithMetadata.UserMetadata
-    };
-
+      multimedia: userWithMetadata.UserMetadata?.multimedia[0]?.url,
+    }
     // Remove the original UserMetadata object from the flattened user
     delete flattenedUser.UserMetadata;
     delete flattenedUser.userId;
+
 
     return flattenedUser;
   }
