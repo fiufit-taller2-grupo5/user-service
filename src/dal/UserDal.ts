@@ -378,16 +378,6 @@ export class UserDal implements IUserDal {
     return userMetadata.multimedia[0].url;
   }
 
-  // model Notification {
-  //   id        Int      @id @default(autoincrement())
-  //   title     String
-  //   body      String
-  //   userId    Int
-  //   user      User     @relation(fields: [userId], references: [id])
-  
-  //   @@schema("user-service")
-  // }
-
   public async newNotification(userId: number, title: string, body: string): Promise<void> {
     await this.findById(userId);
     await this.prismaClient.notification.create({
@@ -395,6 +385,7 @@ export class UserDal implements IUserDal {
         title: title,
         body: body,
         userId: userId,
+        date: new Date(),
       },
     });
   }

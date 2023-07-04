@@ -63,8 +63,8 @@ export class AdminController {
   public async newAdmin(req: Request, res: Response) {
     const { name, email, password } = req.body;
     if (!name || !email) {
-      console.error("Missing name or email");
-      return res.status(BAD_REQUEST_CODE).json({ error: "Missing name or email" });
+      console.error("Falta nombre o contraseña");
+      return res.status(BAD_REQUEST_CODE).json({ error: "Falta nombre o contraseña" });
     }
 
     const admin = await this.adminDal.create(name, email);

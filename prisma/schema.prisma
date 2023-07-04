@@ -80,6 +80,7 @@ model Notification {
   title     String
   body      String
   userId    Int
+  date      DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
 
   @@schema("user-service")
