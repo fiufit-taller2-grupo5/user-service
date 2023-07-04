@@ -27,4 +27,5 @@ export interface IUserDal {
   getProfilePicture(userId: number): Promise<string | null>;
   newNotification(userId: number, title: string, body: string): Promise<void>;
   getNotifications(userId: number): Promise<string[]>;
+  changeName(userId: number, newName: string): Promise<void>;
 }

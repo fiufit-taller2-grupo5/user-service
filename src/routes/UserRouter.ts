@@ -274,6 +274,11 @@ export class UserRouter {
       "/:id/notifications",
       this.routeHandler(this.userController.getNotifications)
     );
+
+    this.router.put(
+      "/:id/name",
+      this.routeHandler(this.userController.changeName)
+    );
   }
 
   private routeHandler(method: Function) {

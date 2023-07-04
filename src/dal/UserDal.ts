@@ -409,4 +409,12 @@ export class UserDal implements IUserDal {
     return notifications;
   }
 
+  public async changeName(userId: number, name: string): Promise<void> {
+    await this.findById(userId);
+    await this.prismaClient.user.update({
+      where: { id: userId },
+      data: { name: name },
+    });
+  }
+
 }

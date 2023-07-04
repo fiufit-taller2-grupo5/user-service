@@ -368,6 +368,26 @@ export class UserController {
     const notifications = await this.userDal.getNotifications(userId);
     return res.status(OK_CODE).json(notifications);
   }
+
+  public async changeName(req: Request, res: Response) {
+    const userId = +req.params.id;
+    const { name } = req.body;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Id invalido" });
+    }
+
+    if (!name || name === "") {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Debe proporcionar nombre" });
+    }
+
+    if (typeof name !== "string") {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Name must be a string" });
+    }
+
+    await this.userDal.changeName(userId, name);
+    return res.status(OK_CODE).json({ status: "Name changed" });
+  }
 }
 
 async function sendPushNotification(message: any) {
@@ -381,3 +401,4 @@ async function sendPushNotification(message: any) {
       body: JSON.stringify(message)
     });
 }
+
