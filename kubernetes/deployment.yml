@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: registry.cloud.okteto.net/prod-szwtomas/user-service:latest
+          image: registry.cloud.okteto.net/prod2-szwtomas/user-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

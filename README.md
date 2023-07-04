@@ -18,8 +18,8 @@ For running tests, first install dependencies as instructed in the previous sect
 
 To build the image that will be used in the deployment, check you have th correct k8s okteto credentials and execute:
 
-1. `okteto build -t okteto.dev/user-service:latest --namespace prod-szwtomas`
-2. `okteto deploy --namespace prod-szwtomas`
+1. `okteto build -t okteto.dev/user-service:latest --namespace prod2-szwtomas`
+2. `okteto deploy --namespace prod2-szwtomas`
 
 ## Endpoints:
 
