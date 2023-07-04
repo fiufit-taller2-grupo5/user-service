@@ -15,6 +15,7 @@ import { User } from "@prisma/client";
 import { MetricName } from "../metrics/metrics_types";
 import { sendSystemMetric } from "../metrics/metrics_service";
 import multer from "multer";
+import { send } from "process";
 var storage = multer.memoryStorage(); 
  var upload = multer({ storage: storage });
 
@@ -341,7 +342,20 @@ export class UserController {
     }
 
     await this.userDal.newNotification(userId, title, body);
-    return res.status(OK_CODE).json({ status: "Notification saved" });
+
+    const token = await this.userDal.getPushToken(userId);
+    if (token) {
+      const notification = {
+        to: token,
+        title: title,
+        body: body,
+      };
+      await sendPushNotification(notification);
+    } else {
+      return res.status(CREATED_CODE).json({ status: "Notification saved but not sended" });
+    }
+
+    return res.status(OK_CODE).json({ status: "Notification saved and sended" });
   }
 
   public async getNotifications(req: Request, res: Response) {
@@ -354,7 +368,16 @@ export class UserController {
     const notifications = await this.userDal.getNotifications(userId);
     return res.status(OK_CODE).json(notifications);
   }
-
-
 }
 
+async function sendPushNotification(message: any) {
+  await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(message)
+    });
+}
