@@ -391,8 +391,6 @@ export class UserDal implements IUserDal {
 
   public async newNotification(userId: number, title: string, body: string, fromUserId: number): Promise<void> {
     await this.findById(userId);
-    console.log("MIRA CA")
-    console.log(fromUserId);
     if (fromUserId) {
       await this.findById(fromUserId);
     }
