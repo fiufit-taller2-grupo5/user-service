@@ -53,35 +53,35 @@ enum Interests {
 }
 
 model UserMetadata {
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId    Int         @id
-  weight    Int?
-  height    Int?
-  birthDate DateTime?
-  location  String
-  interests Interests[]
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     Int          @id
+  weight     Int?
+  height     Int?
+  birthDate  DateTime?
+  location   String
+  interests  Interests[]
   multimedia Multimedia[]
 
   @@schema("user-service")
 }
 
 model Multimedia {
-  id        Int      @id @default(autoincrement())
-  url       String
-  type      String
-  userId    Int
+  id           Int           @id @default(autoincrement())
+  url          String
+  type         String
+  userId       Int
   userMetadata UserMetadata? @relation(fields: [userId], references: [userId])
 
   @@schema("user-service")
 }
 
 model Notification {
-  id        Int      @id @default(autoincrement())
-  title     String
-  body      String
-  userId    Int
-  date      DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  id     Int      @id @default(autoincrement())
+  title  String
+  body   String
+  userId Int
+  date   DateTime @default(now())
+  user   User     @relation(fields: [userId], references: [id])
 
   @@schema("user-service")
 }
@@ -96,7 +96,7 @@ model UserFollows {
 }
 
 model UserPushToken {
-  token  String @unique
+  token  String
   userId Int
   User   User   @relation(fields: [userId], references: [id])
 
