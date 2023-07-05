@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { Multimedia, PrismaClient, User } from "@prisma/client";
 import { ACTIVE_USER, BLOCKED_USER, REGULAR_USER } from "../constants/userStateConstants";
 import { IUserDal } from "./IUserDal";
 import { UserMetadata } from "@prisma/client";
@@ -389,13 +389,19 @@ export class UserDal implements IUserDal {
     return userMetadata.multimedia[0].url;
   }
 
-  public async newNotification(userId: number, title: string, body: string): Promise<void> {
+  public async newNotification(userId: number, title: string, body: string, fromUserId: number): Promise<void> {
     await this.findById(userId);
+    console.log("MIRA CA")
+    console.log(fromUserId);
+    if (fromUserId) {
+      await this.findById(fromUserId);
+    }
     await this.prismaClient.notification.create({
       data: {
         title: title,
         body: body,
         userId: userId,
+        fromUserId: fromUserId,
         date: new Date(),
       },
     });
@@ -408,6 +414,70 @@ export class UserDal implements IUserDal {
     });
     return notifications;
   }
+
+  public async getNotificationsWithSenders(userId: number): Promise<any> {
+    await this.findById(userId);
+  
+    const notifications = await this.prismaClient.notification.findMany({
+      where: { userId: userId },
+    });
+  
+    const notificationsWithSenders = await Promise.all(
+      notifications.map(async (notification) => {
+        if (notification.fromUserId) {
+          const sender = await this.prismaClient.user.findUnique({
+            where: { id: notification.fromUserId },
+            include: {
+              UserMetadata: {
+                select: {
+                  multimedia: true,
+                },
+              },
+            },
+          });
+  
+          const { id, email, name, UserMetadata } =
+            sender as (User & {
+              UserMetadata: { multimedia: Multimedia[] } | null;
+            });
+  
+          const { multimedia } = UserMetadata || {};
+  
+          return {
+            id: notification.id,
+            title: notification.title,
+            body: notification.body,
+            userId: notification.userId,
+            fromUserId: notification.fromUserId,
+            date: notification.date,
+            sender: {
+              id,
+              email,
+              name,
+              UserMetadata: {
+                multimedia,
+              },
+            },
+          };
+        }
+        return {
+          id: notification.id,
+          title: notification.title,
+          body: notification.body,
+          userId: notification.userId,
+          fromUserId: notification.fromUserId,
+          date: notification.date,
+          sender: null,
+        };
+      })
+    );
+  
+    return notificationsWithSenders;
+  }
+  
+  
+
+
 
   public async changeName(userId: number, name: string): Promise<void> {
     await this.findById(userId);

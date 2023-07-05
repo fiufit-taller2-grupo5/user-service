@@ -331,7 +331,7 @@ export class UserController {
 
   public async newNotification(req: Request, res: Response) {
     const userId = +req.params.id;
-    const { title, body } = req.body;
+    const { title, body, fromUserId } = req.body;
 
     if (isNaN(userId)) {
       return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
@@ -341,7 +341,7 @@ export class UserController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Missing title or body" });
     }
 
-    await this.userDal.newNotification(userId, title, body);
+    await this.userDal.newNotification(userId, title, body, fromUserId);
 
     const token = await this.userDal.getPushToken(userId);
     if (token) {
@@ -349,6 +349,7 @@ export class UserController {
         to: token,
         title: title,
         body: body,
+        fromUserId: fromUserId,
       };
       await sendPushNotification(notification);
     } else {
@@ -365,7 +366,7 @@ export class UserController {
       return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
     }
 
-    const notifications = await this.userDal.getNotifications(userId);
+    const notifications = await this.userDal.getNotificationsWithSenders(userId);
     return res.status(OK_CODE).json(notifications);
   }
 

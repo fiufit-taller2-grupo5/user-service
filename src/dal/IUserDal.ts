@@ -25,7 +25,8 @@ export interface IUserDal {
   getPushToken(userId: number): Promise<string | null>;
   addProfilePicture(userId: number, pictureUrl: string): Promise<void>;
   getProfilePicture(userId: number): Promise<string | null>;
-  newNotification(userId: number, title: string, body: string): Promise<void>;
-  getNotifications(userId: number): Promise<string[]>;
+  newNotification(userId: number, title: string, body: string, fromUserId: number): Promise<void>;
+  getNotifications(userId: number): Promise<Notification[]>;
+  getNotificationsWithSenders(userId: number): Promise<any>;
   changeName(userId: number, newName: string): Promise<void>;
 }
