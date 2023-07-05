@@ -269,29 +269,6 @@ export class UserController {
     return res.status(OK_CODE).json(users);
   }
 
-  public async setPushToken(req: Request, res: Response) {
-    const userId = +req.params.id;
-    const { token } = req.body;
-
-    if (isNaN(userId) || !token) {
-      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid user id or token" });
-    }
-
-    await this.userDal.setPushToken(userId, token);
-    return res.status(OK_CODE).json({ status: "Push token set" });
-  }
-
-  public async getPushToken(req: Request, res: Response) {
-    const userId = +req.params.id;
-
-    if (isNaN(userId)) {
-      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
-    }
-
-    const token = await this.userDal.getPushToken(userId);
-    return res.status(OK_CODE).json(token);
-  }
-
   public async addProfilePicture(req: Request, res: Response) {
     console.log("uploadedFile", req.file);
     try {
@@ -329,6 +306,29 @@ export class UserController {
     return res.status(OK_CODE).json(pictureUrl);
   }
 
+  public async setPushToken(req: Request, res: Response) {
+    const userId = +req.params.id;
+    const { token } = req.body;
+
+    if (isNaN(userId) || !token) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid user id or token" });
+    }
+
+    await this.userDal.setPushToken(userId, token);
+    return res.status(OK_CODE).json({ status: "Push token set" });
+  }
+
+  public async getPushToken(req: Request, res: Response) {
+    const userId = +req.params.id;
+
+    if (isNaN(userId)) {
+      return res.status(BAD_REQUEST_CODE).json({ error: "Invalid id" });
+    }
+
+    const token = await this.userDal.getPushToken(userId);
+    return res.status(OK_CODE).json(token);
+  }
+
   public async newNotification(req: Request, res: Response) {
     const userId = +req.params.id;
     const { title, body, fromUserId } = req.body;
@@ -351,7 +351,13 @@ export class UserController {
         body: body,
         fromUserId: fromUserId,
       };
-      await sendPushNotification(notification);
+      try {
+        sendPushNotification(notification);
+      }
+      catch (error) {
+        console.log("Error sending push notification:", error);
+        return res.status(INTERNAL_SERVER_ERROR_CODE).json({ error: "Error sending push notification" });
+      }
     } else {
       return res.status(CREATED_CODE).json({ status: "Notification saved but not sended" });
     }
